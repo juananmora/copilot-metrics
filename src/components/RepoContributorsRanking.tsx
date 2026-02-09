@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { Trophy, GitCommit, GitPullRequest, Award, Star, Users, ExternalLink, FolderGit2 } from 'lucide-react';
-
-// GitHub Enterprise base URL
-const GITHUB_BASE_URL = 'https://github.com';
+import { getEffectiveGitHubConfig } from '../services/tokenService';
 
 export interface Contributor {
   login: string;
@@ -42,6 +40,7 @@ export function RepoContributorsRanking({
   onRepoChange 
 }: RepoContributorsRankingProps) {
   const [sortBy, setSortBy] = useState<'total' | 'commits' | 'prs'>('total');
+  const { webUrl, owner } = getEffectiveGitHubConfig();
 
   const hasContributors = data && data.contributors.length > 0;
 
@@ -83,7 +82,7 @@ export function RepoContributorsRanking({
               </h3>
               {repoName && (
                 <a 
-                  href={`${GITHUB_BASE_URL}/copilot-full-capacity/${repoName}`}
+                  href={`${webUrl}/${owner}/${repoName}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-[#7500C0] hover:text-[#A100FF] flex items-center gap-1 transition-colors"
@@ -210,7 +209,7 @@ export function RepoContributorsRanking({
                         <td className="py-3 px-4">
                           <div className="flex items-center gap-3">
                             <a 
-                              href={`${GITHUB_BASE_URL}/${contributor.login}`}
+                              href={`${webUrl}/${contributor.login}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="relative flex-shrink-0"
@@ -234,7 +233,7 @@ export function RepoContributorsRanking({
                             </a>
                             <div>
                               <a 
-                                href={`${GITHUB_BASE_URL}/${contributor.login}`}
+                                href={`${webUrl}/${contributor.login}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="font-semibold text-gray-900 hover:text-[#7500C0] transition-colors"

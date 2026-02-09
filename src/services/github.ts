@@ -10,15 +10,14 @@ import {
   LanguageStats,
   TimezoneActivity
 } from '../types';
-import { getEffectiveToken, hasToken } from './tokenService';
+import { getApiBaseUrl, getEffectiveGitHubConfig, getEffectiveToken, hasToken } from './tokenService';
 import { saveToCache, getFromCache } from './offlineCache';
 
-// Configuration - GitHub Enterprise BBVA
-const ORGANIZATION = 'copilot-full-capacity';
-
-// Use local proxy to avoid CORS issues
+// Use local proxy to avoid CORS issues when no custom URL is set
 // Vite proxy: /github-api -> https://bbva.ghe.com/api/v3
-const API_BASE_URL = '/github-api';
+function resolveApiBaseUrl(): string {
+  return getApiBaseUrl();
+}
 
 // Flag to use mock data if API fails (for demo purposes)
 // Auto-detect: use mock when no token is configured, try API when token exists
@@ -46,7 +45,7 @@ function refreshMockDataFlag() {
 function createApiInstance() {
   const token = getEffectiveToken();
   return axios.create({
-    baseURL: API_BASE_URL,
+    baseURL: resolveApiBaseUrl(),
     headers: {
       'Authorization': `Bearer ${token}`,
       'Accept': 'application/vnd.github+json',
@@ -327,6 +326,8 @@ export async function fetchCopilotSeats(): Promise<{ totalSeats: number; seats: 
     return getMockSeatsData();
   }
 
+  const { owner } = getEffectiveGitHubConfig();
+
   const allSeats: ProcessedSeat[] = [];
   let page = 1;
   const perPage = 100;
@@ -336,7 +337,7 @@ export async function fetchCopilotSeats(): Promise<{ totalSeats: number; seats: 
   while (hasMore) {
     try {
       const response = await getApi().get<CopilotSeatsResponse>(
-        `/orgs/${ORGANIZATION}/copilot/billing/seats`,
+        `/orgs/${owner}/copilot/billing/seats`,
         { params: { per_page: perPage, page } }
       );
 
@@ -495,6 +496,8 @@ export async function fetchCopilotPRs(): Promise<ProcessedPR[]> {
     return getMockPRsData();
   }
 
+  const { owner } = getEffectiveGitHubConfig();
+
   const allPRs: ProcessedPR[] = [];
   let page = 1;
   const perPage = 100;
@@ -503,7 +506,7 @@ export async function fetchCopilotPRs(): Promise<ProcessedPR[]> {
   while (hasMore) {
     try {
       // Use URL-safe query format for GitHub Enterprise search
-      const searchUrl = `/search/issues?q=type:pr+org:${ORGANIZATION}+author:app/copilot-swe-agent&per_page=${perPage}&page=${page}`;
+      const searchUrl = `/search/issues?q=type:pr+org:${owner}+author:app/copilot-swe-agent&per_page=${perPage}&page=${page}`;
       const response = await getApi().get<SearchResponse>(searchUrl);
 
       console.log(`Found ${response.data.total_count} total PRs`);
@@ -1016,12 +1019,13 @@ async function fetchNamesForRankingUsers(
 
 export async function fetchDashboardData(): Promise<DashboardData> {
   refreshMockDataFlag();
+  const { owner } = getEffectiveGitHubConfig();
   let seatsStats: SeatsStats | null = null;
   let seatsList: ProcessedSeat[] = [];
 
   console.log('Fetching dashboard data...');
-  console.log(`API Base: ${API_BASE_URL}`);
-  console.log(`Organization: ${ORGANIZATION}`);
+  console.log(`API Base: ${resolveApiBaseUrl()}`);
+  console.log(`Organization: ${owner}`);
   console.log(`Mode: ${useMockData ? 'MOCK' : 'API (live)'}`);
 
   // Fetch seats
@@ -1172,6 +1176,8 @@ export async function fetchOrgRepos(): Promise<OrgRepo[]> {
     return [];
   }
 
+  const { owner } = getEffectiveGitHubConfig();
+
   const allRepos: OrgRepo[] = [];
   let page = 1;
   const perPage = 100;
@@ -1185,7 +1191,7 @@ export async function fetchOrgRepos(): Promise<OrgRepo[]> {
         description?: string;
         updated_at: string;
         archived: boolean;
-      }>>(`/orgs/${ORGANIZATION}/repos`, {
+      }>>(`/orgs/${owner}/repos`, {
         params: { per_page: perPage, page, sort: 'updated', direction: 'desc', type: 'all' }
       });
 
@@ -1209,7 +1215,7 @@ export async function fetchOrgRepos(): Promise<OrgRepo[]> {
       }
     }
 
-    console.log(`Fetched ${allRepos.length} repos from org ${ORGANIZATION}`);
+    console.log(`Fetched ${allRepos.length} repos from org ${owner}`);
     return allRepos;
   } catch (error) {
     console.error('Error fetching org repos:', error);
@@ -1243,7 +1249,8 @@ export interface RepoContributorsData {
  * Uses hasToken() directly — independent of the global useMockData flag.
  */
 export async function fetchRepoContributors(repoName: string): Promise<RepoContributorsData> {
-  const fullRepoName = repoName.includes('/') ? repoName : `${ORGANIZATION}/${repoName}`;
+  const { owner } = getEffectiveGitHubConfig();
+  const fullRepoName = repoName.includes('/') ? repoName : `${owner}/${repoName}`;
 
   if (!hasToken()) {
     console.log('No token — cannot fetch contributors');

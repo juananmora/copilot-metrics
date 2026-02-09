@@ -13,9 +13,23 @@ import {
   Trash2,
   Shield,
   Server,
-  Building2
+  Building2,
+  Globe
 } from 'lucide-react';
-import { getStoredToken, setStoredToken, clearStoredToken, validateToken, hasToken, TokenInfo } from '../services/tokenService';
+import { 
+  getStoredToken, 
+  setStoredToken, 
+  clearStoredToken, 
+  validateToken, 
+  hasToken, 
+  TokenInfo,
+  getStoredGitHubConfig,
+  setStoredGitHubConfig,
+  clearStoredGitHubConfig,
+  getEffectiveGitHubConfig,
+  validateGitHubConnection,
+  getApiUrlForBaseUrl
+} from '../services/tokenService';
 
 export function SettingsPage() {
   const queryClient = useQueryClient();
@@ -25,6 +39,11 @@ export function SettingsPage() {
   const [tokenInfo, setTokenInfo] = useState<TokenInfo | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error' | 'warning'; text: string } | null>(null);
   const [hasStoredToken, setHasStoredToken] = useState(false);
+  const [isTestingConfig, setIsTestingConfig] = useState(false);
+  const [baseUrl, setBaseUrl] = useState('');
+  const [owner, setOwner] = useState('');
+  const [hasStoredConfig, setHasStoredConfig] = useState(false);
+  const apiUrlPreview = getApiUrlForBaseUrl(baseUrl || undefined);
 
   useEffect(() => {
     const stored = getStoredToken();
@@ -34,7 +53,72 @@ export function SettingsPage() {
       // Validate on load
       handleValidate(stored);
     }
+
+    const storedConfig = getStoredGitHubConfig();
+    const effective = getEffectiveGitHubConfig();
+    if (storedConfig) {
+      setHasStoredConfig(true);
+    }
+    setBaseUrl(effective.baseUrl);
+    setOwner(effective.owner);
   }, []);
+
+  const handleSaveConfig = () => {
+    if (!baseUrl.trim() || !owner.trim()) {
+      setMessage({ type: 'warning', text: 'Introduce la URL de GitHub y la organización/usuario' });
+      return;
+    }
+
+    setMessage({ type: 'success', text: 'Guardando configuración de GitHub...' });
+
+    setStoredGitHubConfig({
+      baseUrl: baseUrl.trim(),
+      owner: owner.trim(),
+      repo: ''
+    });
+    setHasStoredConfig(true);
+    setMessage({ type: 'success', text: 'Configuración de GitHub guardada correctamente' });
+    queryClient.invalidateQueries();
+  };
+
+  const handleClearConfig = () => {
+    clearStoredGitHubConfig();
+    const effective = getEffectiveGitHubConfig();
+    setBaseUrl(effective.baseUrl);
+    setOwner(effective.owner);
+    setHasStoredConfig(false);
+    setMessage({ type: 'warning', text: 'Configuración personalizada eliminada. Se usan valores por defecto.' });
+    queryClient.invalidateQueries();
+  };
+
+  const handleTestConfig = async () => {
+    if (!token.trim()) {
+      setMessage({ type: 'warning', text: 'Introduce un token para validar la conexión' });
+      return;
+    }
+
+    if (!baseUrl.trim() || !owner.trim()) {
+      setMessage({ type: 'warning', text: 'Completa la URL de GitHub y la organización/usuario' });
+      return;
+    }
+
+    setIsTestingConfig(true);
+    setMessage(null);
+
+    try {
+      const result = await validateGitHubConnection(token, {
+        baseUrl: baseUrl.trim(),
+        owner: owner.trim()
+      });
+      if (result.valid) {
+        setMessage({ type: 'success', text: 'Conexión válida con GitHub y organización' });
+      } else {
+        setMessage({ type: 'error', text: result.error || 'No se pudo validar la conexión' });
+      }
+    } finally {
+      setIsTestingConfig(false);
+    }
+  };
 
   const handleValidate = async (tokenToValidate?: string) => {
     const t = tokenToValidate || token;
@@ -47,7 +131,7 @@ export function SettingsPage() {
     setMessage(null);
 
     try {
-      const info = await validateToken(t);
+      const info = await validateToken(t, { baseUrl: baseUrl.trim(), owner: owner.trim() });
       setTokenInfo(info);
       
       if (info.valid) {
@@ -72,7 +156,7 @@ export function SettingsPage() {
     // Try to validate, but save anyway even if validation fails (network may be unreachable)
     setIsValidating(true);
     try {
-      const info = await validateToken(token);
+      const info = await validateToken(token, { baseUrl: baseUrl.trim(), owner: owner.trim() });
       setStoredToken(token);
       setHasStoredToken(true);
       setTokenInfo(info);
@@ -110,6 +194,17 @@ export function SettingsPage() {
     });
     queryClient.invalidateQueries();
   };
+
+  let messageClassName = '';
+  if (message) {
+    if (message.type === 'success') {
+      messageClassName = 'bg-[#00A551]/20 text-[#00A551] border border-[#00A551]/30';
+    } else if (message.type === 'error') {
+      messageClassName = 'bg-red-500/20 text-red-400 border border-red-500/30';
+    } else {
+      messageClassName = 'bg-[#FFB800]/20 text-[#FFB800] border border-[#FFB800]/30';
+    }
+  }
 
   const maskToken = (t: string) => {
     if (t.length <= 8) return '••••••••';
@@ -174,11 +269,12 @@ export function SettingsPage() {
 
           {/* Token input */}
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-300">
+            <label htmlFor="github-token" className="block text-sm font-medium text-gray-300">
               Token de GitHub
             </label>
             <div className="relative">
               <input
+                id="github-token"
                 type={showToken ? 'text' : 'password'}
                 value={token}
                 onChange={(e) => setToken(e.target.value)}
@@ -239,11 +335,7 @@ export function SettingsPage() {
 
           {/* Message */}
           {message && (
-            <div className={`flex items-center gap-3 p-4 rounded-xl ${
-              message.type === 'success' ? 'bg-[#00A551]/20 text-[#00A551] border border-[#00A551]/30' :
-              message.type === 'error' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
-              'bg-[#FFB800]/20 text-[#FFB800] border border-[#FFB800]/30'
-            }`}>
+            <div className={`flex items-center gap-3 p-4 rounded-xl ${messageClassName}`}>
               {message.type === 'success' && <CheckCircle className="w-5 h-5" />}
               {message.type === 'error' && <XCircle className="w-5 h-5" />}
               {message.type === 'warning' && <AlertTriangle className="w-5 h-5" />}
@@ -283,6 +375,95 @@ export function SettingsPage() {
               </div>
             </div>
           )}
+        </div>
+      </div>
+
+      {/* GitHub Connection Card */}
+      <div className="bg-gradient-to-br from-[#FFFFFF] to-[#F9FAFB] rounded-2xl shadow-lg border border-[#E5E7EB] overflow-hidden">
+        <div className="bg-gradient-to-r from-[#001891]/20 to-[#004481]/20 px-6 py-4 border-b border-[#E5E7EB]">
+          <div className="flex items-center gap-3">
+            <Server className="w-5 h-5 text-[#001891]" />
+            <h2 className="text-lg font-semibold text-gray-900">Conexión a GitHub</h2>
+          </div>
+          <p className="text-gray-400 text-sm mt-1">
+            Configura la URL de GitHub y la organización/usuario
+          </p>
+        </div>
+
+        <div className="p-6 space-y-6">
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label htmlFor="github-base-url" className="block text-sm font-medium text-gray-300">
+                URL de GitHub
+              </label>
+              <div className="relative">
+                <input
+                  id="github-base-url"
+                  type="url"
+                  value={baseUrl}
+                  onChange={(e) => setBaseUrl(e.target.value)}
+                  placeholder="https://bbva.ghe.com"
+                  className="w-full px-4 py-3 pl-10 border border-[#E5E7EB] bg-[#F9FAFB] rounded-xl focus:ring-2
+                           focus:ring-[#001891]/30 focus:border-[#001891] transition-all
+                           text-sm text-gray-900 placeholder-gray-500"
+                />
+                <Globe className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              </div>
+              <p className="text-xs text-gray-400">Ej: https://github.com o https://bbva.ghe.com</p>
+              <p className="text-xs text-gray-500">API efectiva: {apiUrlPreview}</p>
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="github-owner" className="block text-sm font-medium text-gray-300">
+                Organización / Usuario
+              </label>
+              <div className="relative">
+                <input
+                  id="github-owner"
+                  type="text"
+                  value={owner}
+                  onChange={(e) => setOwner(e.target.value)}
+                  placeholder="copilot-full-capacity"
+                  className="w-full px-4 py-3 pl-10 border border-[#E5E7EB] bg-[#F9FAFB] rounded-xl focus:ring-2
+                           focus:ring-[#001891]/30 focus:border-[#001891] transition-all
+                           text-sm text-gray-900 placeholder-gray-500"
+                />
+                <Building2 className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={handleSaveConfig}
+              className="flex items-center gap-2 px-4 py-2.5 bg-[#001891] hover:bg-[#004481]
+                       text-white rounded-xl transition-all"
+            >
+              <Save className="w-4 h-4" />
+              Guardar configuración
+            </button>
+
+            <button
+              onClick={handleTestConfig}
+              disabled={isTestingConfig}
+              className="flex items-center gap-2 px-4 py-2.5 bg-[#E5E7EB] hover:bg-[#CBD5F5]
+                       text-gray-900 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <RefreshCw className={`w-4 h-4 ${isTestingConfig ? 'animate-spin' : ''}`} />
+              Probar conexión
+            </button>
+
+            {hasStoredConfig && (
+              <button
+                onClick={handleClearConfig}
+                className="flex items-center gap-2 px-4 py-2.5 bg-red-500/20 hover:bg-red-500/30
+                         text-red-400 rounded-xl transition-all ml-auto border border-red-500/30"
+              >
+                <Trash2 className="w-4 h-4" />
+                Restaurar valores
+              </button>
+            )}
+          </div>
         </div>
       </div>
 

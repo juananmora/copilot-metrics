@@ -45,7 +45,8 @@ export function UsersPage() {
   }, [orgRepos, prs?.topRepos]);
 
   // Auto-select the first repo once the list is available
-  const effectiveRepo = selectedRepo && allRepos.find(r => r.value === selectedRepo)
+  const isSelectedRepoValid = selectedRepo ? allRepos.some(r => r.value === selectedRepo) : false;
+  const effectiveRepo = isSelectedRepoValid
     ? selectedRepo
     : allRepos[0]?.value || '';
 
@@ -88,7 +89,7 @@ export function UsersPage() {
 
       {/* Top Users Table */}
       {seatsList && seatsList.length > 0 && (
-        <TopUsersTable users={seatsList} />
+        <TopUsersTable users={seatsList} isLiveData={data.isLiveData} dataSource={data.dataSource} />
       )}
 
       {/* Repository Contributors Ranking */}

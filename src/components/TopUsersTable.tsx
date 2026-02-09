@@ -10,13 +10,13 @@ function parseDateString(dateStr: string): Date | null {
   if (!dateStr || dateStr === '-') return null;
   
   const date = new Date(dateStr);
-  if (!isNaN(date.getTime())) return date;
+  if (!Number.isNaN(date.getTime())) return date;
   
   return null;
 }
 
 // Mini Sparkline component for activity visualization
-function ActivitySparkline({ lastActivityAt, isActive }: { lastActivityAt: string; isActive: boolean }) {
+function ActivitySparkline({ lastActivityAt, isActive }: Readonly<{ lastActivityAt: string; isActive: boolean }>) {
   const generateActivityPattern = () => {
     if (!isActive || lastActivityAt === '-') {
       return [0, 0, 0, 0, 0, 0, 0];
@@ -43,28 +43,41 @@ function ActivitySparkline({ lastActivityAt, isActive }: { lastActivityAt: strin
   };
 
   const pattern = useMemo(generateActivityPattern, [lastActivityAt, isActive]);
+  const patternItems = useMemo(
+    () => pattern.map((value, idx) => ({ id: `${lastActivityAt || 'na'}-${idx}`, value })),
+    [pattern, lastActivityAt]
+  );
   const maxHeight = 20;
 
   return (
     <div className="flex items-end gap-0.5 h-5" title="Actividad últimos 7 días">
-      {pattern.map((value, i) => (
+      {patternItems.map((item) => {
+        let colorClass = 'bg-gray-200';
+        if (item.value > 60) {
+          colorClass = 'bg-[#00A551]';
+        } else if (item.value > 30) {
+          colorClass = 'bg-[#A100FF]/40';
+        }
+
+        return (
         <div
-          key={i}
-          className={`w-1 rounded-sm transition-all ${
-            value > 60 ? 'bg-[#00A551]' : value > 30 ? 'bg-[#A100FF]/40' : 'bg-gray-200'
-          }`}
-          style={{ height: `${(value / 100) * maxHeight}px` }}
+          key={item.id}
+          className={`w-1 rounded-sm transition-all ${colorClass}`}
+          style={{ height: `${(item.value / 100) * maxHeight}px` }}
         />
-      ))}
+      );
+      })}
     </div>
   );
 }
 
 interface TopUsersTableProps {
   users: ProcessedSeat[];
+  isLiveData?: boolean;
+  dataSource?: string;
 }
 
-export function TopUsersTable({ users }: TopUsersTableProps) {
+export function TopUsersTable({ users, isLiveData = true, dataSource }: Readonly<TopUsersTableProps>) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState('');
@@ -96,8 +109,8 @@ export function TopUsersTable({ users }: TopUsersTableProps) {
     const term = searchTerm.toLowerCase();
     return sortedUsers.filter(u => 
       u.login.toLowerCase().includes(term) ||
-      (u.name && u.name.toLowerCase().includes(term)) ||
-      (u.email && u.email.toLowerCase().includes(term)) ||
+      u.name?.toLowerCase().includes(term) ||
+      u.email?.toLowerCase().includes(term) ||
       u.lastActivityEditor.toLowerCase().includes(term)
     );
   }, [sortedUsers, searchTerm]);
@@ -110,11 +123,11 @@ export function TopUsersTable({ users }: TopUsersTableProps) {
   // Format editor name
   const formatEditor = (editor: string) => {
     if (editor.includes('vscode/')) {
-      const match = editor.match(/vscode\/([^/]+)/);
+      const match = /vscode\/([^/]+)/.exec(editor);
       return match ? `VS Code ${match[1]}` : 'VS Code';
     }
     if (editor.includes('jetbrains/')) {
-      const match = editor.match(/jetbrains\/([^/]+)/);
+      const match = /jetbrains\/([^/]+)/.exec(editor);
       return match ? `JetBrains ${match[1]}` : 'JetBrains';
     }
     if (editor === 'copilot-developer') return 'Copilot Developer';
@@ -175,7 +188,7 @@ export function TopUsersTable({ users }: TopUsersTableProps) {
     if (!dateStr || dateStr === '-') return dateStr;
     
     const date = new Date(dateStr);
-    if (isNaN(date.getTime())) return dateStr;
+    if (Number.isNaN(date.getTime())) return dateStr;
     
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
@@ -213,6 +226,16 @@ export function TopUsersTable({ users }: TopUsersTableProps) {
               Ranking - PRs de Copilot Asignadas
             </h3>
             <span className="text-xs font-semibold text-[#00A551] bg-[#00A551]/8 px-2 py-0.5 rounded-full border border-[#00A551]/20">SWE Agent</span>
+            {!isLiveData && (
+              <span className="text-xs font-semibold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-200">
+                DEMO
+              </span>
+            )}
+            {dataSource && (
+              <span className="text-xs text-gray-400" title={dataSource}>
+                {dataSource}
+              </span>
+            )}
           </div>
           
           {/* Search and controls */}
@@ -239,7 +262,7 @@ export function TopUsersTable({ users }: TopUsersTableProps) {
           </div>
         </div>
 
-        {/* Stats summary - REAL DATA from Copilot SWE Agent PRs */}
+        {/* Stats summary - Copilot SWE Agent PRs */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-[#A100FF]/5 rounded-xl p-4 text-center border border-[#A100FF]/10">
             <div className="text-2xl font-extrabold text-[#A100FF]">{sortedUsers.filter(u => (u.prCount || 0) > 0).length}</div>
@@ -331,9 +354,9 @@ export function TopUsersTable({ users }: TopUsersTableProps) {
                             </a>
                             {userBadges.length > 0 && (
                               <div className="flex items-center gap-1">
-                                {userBadges.map((b, i) => (
+                                {userBadges.map((b) => (
                                   <div 
-                                    key={i}
+                                    key={`${b.icon}-${b.tooltip}`}
                                     className={`w-5 h-5 rounded ${b.bg} flex items-center justify-center`}
                                     title={b.tooltip}
                                   >
