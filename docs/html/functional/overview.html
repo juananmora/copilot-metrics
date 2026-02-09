@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copilot Metrics Portal - Documentación Funcional</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --background-color: #ffffff;
+            --surface-color: #f8fafc;
+            --text-color: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --code-bg: #f1f5f9;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .nav-breadcrumb {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--surface-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+        
+        .nav-breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .nav-breadcrumb a:hover { text-decoration: underline; }
+        
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h2 {
+            font-size: 1.875rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h3 { font-size: 1.5rem; }
+        h4 { font-size: 1.25rem; color: var(--secondary-color); }
+        
+        p { margin-bottom: 1rem; }
+        
+        a { color: var(--primary-color); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        ul, ol { margin-bottom: 1rem; padding-left: 2rem; }
+        li { margin-bottom: 0.5rem; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border: 1px solid var(--border-color);
+        }
+        
+        th {
+            background-color: var(--surface-color);
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) { background-color: var(--surface-color); }
+        tr:hover { background-color: #f1f5f9; }
+        
+        code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            background-color: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+        
+        pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            color: inherit;
+        }
+        
+        .mermaid {
+            background-color: var(--surface-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        
+        blockquote {
+            border-left: 4px solid var(--primary-color);
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            background-color: var(--surface-color);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        blockquote p:last-child { margin-bottom: 0; }
+        
+        hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2rem 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .doc-footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.875rem; }
+            h2 { font-size: 1.5rem; }
+            table { display: block; overflow-x: auto; }
+        }
+        
+        @media print {
+            body { max-width: none; padding: 0; }
+            .nav-breadcrumb { display: none; }
+            pre { white-space: pre-wrap; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-breadcrumb"><a href="index.html">Inicio</a> / <a href="../index.html">functional</a> / <span>overview</span></nav>
+    <article>
+        <h1>Copilot Metrics Portal - Documentación Funcional</h1>
+<h2>Descripción General</h2>
+<p>El Copilot Metrics Portal es un dashboard ejecutivo diseñado para BBVA que permite visualizar y analizar las métricas de adopción de GitHub Copilot en la organización. Proporciona insights sobre productividad, uso de agentes personalizados, y efectividad de los Pull Requests generados por IA.</p>
+<h2>Objetivos del Sistema</h2>
+<ul>
+<li><strong>Visibilidad Ejecutiva</strong>: Proporcionar métricas clave de adopción de Copilot a nivel organizacional</li>
+<li><strong>Análisis de Productividad</strong>: Medir el impacto de Copilot en la generación de código y PRs</li>
+<li><strong>Tracking de Agentes</strong>: Monitorear el uso y efectividad de Custom Agents de Copilot</li>
+<li><strong>Rankings y Gamificación</strong>: Mostrar contribuidores destacados para fomentar adopción</li>
+<li><strong>Tiempo Real</strong>: Ofrecer datos actualizados mediante WebSocket</li>
+</ul>
+<h2>Usuarios y Roles</h2>
+<table>
+<thead>
+<tr>
+<th>Rol</th>
+<th>Descripción</th>
+<th>Permisos</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ejecutivo</td>
+<td>Directivos y managers que monitorean adopción</td>
+<td>Solo lectura de métricas agregadas</td>
+</tr>
+<tr>
+<td>Developer Lead</td>
+<td>Líderes técnicos que analizan equipos</td>
+<td>Lectura de métricas + rankings detallados</td>
+</tr>
+<tr>
+<td>Desarrollador</td>
+<td>Usuarios individuales de Copilot</td>
+<td>Ver su posición en rankings y PRs propias</td>
+</tr>
+</tbody></table>
+<h2>Mapa de Funcionalidades</h2>
+<div class="mermaid">
+mindmap
+  root((Copilot Metrics Portal))
+    Dashboard Ejecutivo
+      KPIs Principales
+      Tendencias
+      Resumen General
+    Módulo Usuarios
+      Adopción de Licencias
+      Rankings por PRs
+      Distribución por Editor
+      Contribuidores por Repo
+    Módulo PRs
+      Lista de Pull Requests
+      Estadísticas de Merge
+      Tiempos de Cierre
+      Filtros y Búsqueda
+    Módulo Agentes
+      Top Agentes
+      Efectividad por Agente
+      Distribución de Uso
+      Radar de Métricas
+    Overview
+      Banner AI
+      Gráfico de Actividad
+      Pulse Monitors
+      Contribution Graph
+    Configuración
+      Token GitHub
+      Preferencias
+</div>
+
+<h2>Índice de Funcionalidades</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Funcionalidad</th>
+<th>Módulo</th>
+<th>Estado</th>
+<th>Documentación</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>F001</td>
+<td>Dashboard Ejecutivo</td>
+<td>Principal</td>
+<td>Activo</td>
+<td><a href="features/feat-executive-dashboard.html">feat-executive-dashboard.md</a></td>
+</tr>
+<tr>
+<td>F002</td>
+<td>Overview con Métricas</td>
+<td>Principal</td>
+<td>Activo</td>
+<td><a href="features/feat-overview.html">feat-overview.md</a></td>
+</tr>
+<tr>
+<td>F003</td>
+<td>Gestión de Usuarios</td>
+<td>Usuarios</td>
+<td>Activo</td>
+<td><a href="features/feat-users.html">feat-users.md</a></td>
+</tr>
+<tr>
+<td>F004</td>
+<td>Análisis de PRs</td>
+<td>PRs</td>
+<td>Activo</td>
+<td><a href="features/feat-pull-requests.html">feat-pull-requests.md</a></td>
+</tr>
+<tr>
+<td>F005</td>
+<td>Analytics de Agentes</td>
+<td>Agentes</td>
+<td>Activo</td>
+<td><a href="features/feat-agents.html">feat-agents.md</a></td>
+</tr>
+<tr>
+<td>F006</td>
+<td>Configuración</td>
+<td>Settings</td>
+<td>Activo</td>
+<td><a href="features/feat-settings.html">feat-settings.md</a></td>
+</tr>
+<tr>
+<td>F007</td>
+<td>Tiempo Real (WebSocket)</td>
+<td>Infraestructura</td>
+<td>Activo</td>
+<td><a href="features/feat-realtime.html">feat-realtime.md</a></td>
+</tr>
+<tr>
+<td>F008</td>
+<td>PWA Offline</td>
+<td>Infraestructura</td>
+<td>Activo</td>
+<td><a href="features/feat-pwa.html">feat-pwa.md</a></td>
+</tr>
+</tbody></table>
+<h2>Navegación Principal</h2>
+<div class="mermaid">
+flowchart LR
+    subgraph "Navegación"
+        A[Executive Dashboard] --> B[Overview]
+        B --> C[Usuarios]
+        C --> D[Pull Requests]
+        D --> E[Agentes]
+        E --> F[Settings]
+    end
+</div>
+
+<h2>Métricas Principales (KPIs)</h2>
+<h3>Adopción</h3>
+<table>
+<thead>
+<tr>
+<th>Métrica</th>
+<th>Descripción</th>
+<th>Cálculo</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Total Licencias</td>
+<td>Seats de Copilot asignados</td>
+<td>Directo de API</td>
+</tr>
+<tr>
+<td>Con Actividad</td>
+<td>Usuarios que han usado Copilot</td>
+<td>Filtro por <code>lastActivityAt != null</code></td>
+</tr>
+<tr>
+<td>Tasa de Adopción</td>
+<td>% de licencias activas</td>
+<td><code>(conActividad / totalLicencias) * 100</code></td>
+</tr>
+<tr>
+<td>Activos 7 días</td>
+<td>Usuarios activos última semana</td>
+<td>Filtro por fecha</td>
+</tr>
+</tbody></table>
+<h3>Pull Requests</h3>
+<table>
+<thead>
+<tr>
+<th>Métrica</th>
+<th>Descripción</th>
+<th>Cálculo</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Total PRs</td>
+<td>PRs creadas por Copilot SWE Agent</td>
+<td>Búsqueda por autor <code>app/copilot-swe-agent</code></td>
+</tr>
+<tr>
+<td>Merge Rate</td>
+<td>% de PRs integradas</td>
+<td><code>(merged / closed) * 100</code></td>
+</tr>
+<tr>
+<td>Rejection Rate</td>
+<td>% de PRs cerradas sin merge</td>
+<td><code>(rejected / closed) * 100</code></td>
+</tr>
+<tr>
+<td>Avg Days to Close</td>
+<td>Tiempo promedio de cierre</td>
+<td>Promedio de <code>daysToClose</code></td>
+</tr>
+</tbody></table>
+<h3>Agentes</h3>
+<table>
+<thead>
+<tr>
+<th>Métrica</th>
+<th>Descripción</th>
+<th>Cálculo</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Unique Agents</td>
+<td>Agentes distintos usados</td>
+<td>Count de Custom Agents únicos</td>
+</tr>
+<tr>
+<td>With Agent</td>
+<td>PRs con agente personalizado</td>
+<td>Filtro por <code>customAgent != &#39;-&#39;</code></td>
+</tr>
+<tr>
+<td>Agent Effectiveness</td>
+<td>Merge rate por agente</td>
+<td>Por cada agente: <code>merged / total</code></td>
+</tr>
+</tbody></table>
+<h2>Flujos de Usuario Principales</h2>
+<h3>Flujo: Consulta de Métricas Ejecutivas</h3>
+<div class="mermaid">
+journey
+    title Flujo Ejecutivo - Consulta Diaria
+    section Acceso
+      Abrir portal: 5: Ejecutivo
+      Ver Dashboard: 5: Ejecutivo
+    section Análisis
+      Revisar KPIs principales: 4: Ejecutivo
+      Comparar tendencias: 4: Ejecutivo
+      Ver ranking de equipos: 3: Ejecutivo
+    section Acción
+      Exportar datos: 4: Ejecutivo
+      Compartir insights: 5: Ejecutivo
+</div>
+
+<h3>Flujo: Análisis de PRs por Desarrollador</h3>
+<div class="mermaid">
+journey
+    title Flujo Desarrollador - Ver mis PRs
+    section Inicio
+      Acceder al portal: 5: Developer
+      Navegar a Usuarios: 4: Developer
+    section Búsqueda
+      Buscar mi usuario: 3: Developer
+      Ver mis PRs asignadas: 4: Developer
+    section Detalle
+      Revisar estado de PRs: 4: Developer
+      Ver tiempo de cierre: 4: Developer
+</div>
+
+<h2>Reglas de Negocio</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Regla</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RN001</td>
+<td>Cálculo de Actividad</td>
+<td>Un usuario se considera &quot;activo&quot; si tiene <code>lastActivityAt</code> no nulo</td>
+</tr>
+<tr>
+<td>RN002</td>
+<td>Merge Rate</td>
+<td>Solo se calcula sobre PRs cerradas (excluye abiertas)</td>
+</tr>
+<tr>
+<td>RN003</td>
+<td>Custom Agent</td>
+<td>Se extrae del body del PR buscando &quot;Custom agent used:&quot;</td>
+</tr>
+<tr>
+<td>RN004</td>
+<td>Rate Limiting</td>
+<td>Máximo 1 refresh manual cada 10 segundos</td>
+</tr>
+<tr>
+<td>RN005</td>
+<td>Caché TTL</td>
+<td>Datos se mantienen en caché 30 segundos por defecto</td>
+</tr>
+</tbody></table>
+<h2>Mensajes del Sistema</h2>
+<table>
+<thead>
+<tr>
+<th>Código</th>
+<th>Tipo</th>
+<th>Mensaje</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MSG001</td>
+<td>Info</td>
+<td>&quot;Datos actualizados correctamente&quot;</td>
+</tr>
+<tr>
+<td>MSG002</td>
+<td>Warning</td>
+<td>&quot;Trabajando en modo offline&quot;</td>
+</tr>
+<tr>
+<td>MSG003</td>
+<td>Error</td>
+<td>&quot;Error al conectar con GitHub&quot;</td>
+</tr>
+<tr>
+<td>MSG004</td>
+<td>Rate Limit</td>
+<td>&quot;Por favor espera X segundos antes de actualizar&quot;</td>
+</tr>
+</tbody></table>
+<h2>Referencias</h2>
+<ul>
+<li><a href="../architecture/overview.html">Documentación de Arquitectura</a></li>
+<li><a href="https://docs.github.com/en/rest/copilot">API de GitHub Copilot</a></li>
+<li><a href="https://bbva.ghe.com">GitHub Enterprise BBVA</a></li>
+</ul>
+
+    </article>
+    <footer class="doc-footer">
+        <p>Documentación generada automáticamente el 04/02/2026, 10:02</p>
+    </footer>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            securityLevel: 'loose',
+            flowchart: { useMaxWidth: true, htmlLabels: true }
+        });
+    </script>
+</body>
+</html>

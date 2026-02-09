@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copilot Metrics Portal - Documentación de Arquitectura</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --background-color: #ffffff;
+            --surface-color: #f8fafc;
+            --text-color: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --code-bg: #f1f5f9;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .nav-breadcrumb {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--surface-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+        
+        .nav-breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .nav-breadcrumb a:hover { text-decoration: underline; }
+        
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h2 {
+            font-size: 1.875rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h3 { font-size: 1.5rem; }
+        h4 { font-size: 1.25rem; color: var(--secondary-color); }
+        
+        p { margin-bottom: 1rem; }
+        
+        a { color: var(--primary-color); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        ul, ol { margin-bottom: 1rem; padding-left: 2rem; }
+        li { margin-bottom: 0.5rem; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border: 1px solid var(--border-color);
+        }
+        
+        th {
+            background-color: var(--surface-color);
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) { background-color: var(--surface-color); }
+        tr:hover { background-color: #f1f5f9; }
+        
+        code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            background-color: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+        
+        pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            color: inherit;
+        }
+        
+        .mermaid {
+            background-color: var(--surface-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        
+        blockquote {
+            border-left: 4px solid var(--primary-color);
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            background-color: var(--surface-color);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        blockquote p:last-child { margin-bottom: 0; }
+        
+        hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2rem 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .doc-footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.875rem; }
+            h2 { font-size: 1.5rem; }
+            table { display: block; overflow-x: auto; }
+        }
+        
+        @media print {
+            body { max-width: none; padding: 0; }
+            .nav-breadcrumb { display: none; }
+            pre { white-space: pre-wrap; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-breadcrumb"><a href="index.html">Inicio</a> / <a href="../index.html">architecture</a> / <span>overview</span></nav>
+    <article>
+        <h1>Copilot Metrics Portal - Documentación de Arquitectura</h1>
+<h2>Visión General</h2>
+<h3>Propósito</h3>
+<p>El Copilot Metrics Portal es un dashboard ejecutivo para visualizar y analizar las métricas de adopción y uso de GitHub Copilot en la organización BBVA. Proporciona insights en tiempo real sobre la productividad del desarrollo asistido por IA.</p>
+<h3>Alcance</h3>
+<p>El sistema incluye:</p>
+<ul>
+<li>Dashboard de métricas de adopción de Copilot</li>
+<li>Análisis de Pull Requests generadas por Copilot SWE Agent</li>
+<li>Rankings de usuarios y contribuidores</li>
+<li>Estadísticas de agentes personalizados</li>
+<li>Comunicación en tiempo real via WebSocket</li>
+</ul>
+<p>No incluye:</p>
+<ul>
+<li>Gestión de usuarios o autenticación propia (usa token de GitHub)</li>
+<li>Modificación de datos en GitHub</li>
+<li>Histórico persistente (datos en memoria/caché)</li>
+</ul>
+<h3>Contexto del Sistema</h3>
+<div class="mermaid">
+C4Context
+    title Diagrama de Contexto - Copilot Metrics Portal
+    
+    Person(exec, "Ejecutivo/Manager", "Visualiza métricas de adopción")
+    Person(dev, "Desarrollador", "Consulta su actividad con Copilot")
+    
+    System(portal, "Copilot Metrics Portal", "Dashboard de métricas en tiempo real")
+    
+    System_Ext(github, "GitHub Enterprise", "API de Copilot y PRs")
+    System_Ext(browser, "Navegador Web", "PWA instalable")
+    
+    Rel(exec, portal, "Consulta métricas")
+    Rel(dev, portal, "Ve su ranking y PRs")
+    Rel(portal, github, "Obtiene datos via API REST")
+    Rel(browser, portal, "WebSocket + HTTP")
+</div>
+
+<h2>Stack Tecnológico</h2>
+<table>
+<thead>
+<tr>
+<th>Capa</th>
+<th>Tecnología</th>
+<th>Versión</th>
+<th>Propósito</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Frontend</td>
+<td>React</td>
+<td>19.x</td>
+<td>UI componentes</td>
+</tr>
+<tr>
+<td>Frontend</td>
+<td>TypeScript</td>
+<td>5.9.x</td>
+<td>Tipado estático</td>
+</tr>
+<tr>
+<td>Frontend</td>
+<td>Vite</td>
+<td>7.x</td>
+<td>Build tool y dev server</td>
+</tr>
+<tr>
+<td>Frontend</td>
+<td>TailwindCSS</td>
+<td>3.4.x</td>
+<td>Estilos utility-first</td>
+</tr>
+<tr>
+<td>Frontend</td>
+<td>React Query</td>
+<td>5.x</td>
+<td>Gestión de estado servidor</td>
+</tr>
+<tr>
+<td>Frontend</td>
+<td>Recharts</td>
+<td>3.x</td>
+<td>Gráficos y visualizaciones</td>
+</tr>
+<tr>
+<td>Frontend</td>
+<td>React Router</td>
+<td>7.x</td>
+<td>Navegación SPA</td>
+</tr>
+<tr>
+<td>Backend</td>
+<td>Node.js</td>
+<td>22.x</td>
+<td>Runtime servidor</td>
+</tr>
+<tr>
+<td>Backend</td>
+<td>Express</td>
+<td>4.x</td>
+<td>HTTP server</td>
+</tr>
+<tr>
+<td>Backend</td>
+<td>ws</td>
+<td>8.x</td>
+<td>WebSocket server</td>
+</tr>
+<tr>
+<td>Backend</td>
+<td>Axios</td>
+<td>1.x</td>
+<td>Cliente HTTP</td>
+</tr>
+<tr>
+<td>PWA</td>
+<td>Vite PWA</td>
+<td>1.x</td>
+<td>Service Worker y manifest</td>
+</tr>
+</tbody></table>
+<h2>Arquitectura de Alto Nivel</h2>
+<div class="mermaid">
+graph TB
+    subgraph "Cliente (Navegador)"
+        UI[React App]
+        SW[Service Worker]
+        WS_C[WebSocket Client]
+        RQ[React Query Cache]
+    end
+    
+    subgraph "Backend (Node.js)"
+        EX[Express Server]
+        WS_S[WebSocket Server]
+        CACHE[In-Memory Cache]
+        GH[GitHub Service]
+    end
+    
+    subgraph "Externo"
+        API[GitHub Enterprise API]
+    end
+    
+    UI --> RQ
+    UI <--> WS_C
+    SW --> UI
+    
+    WS_C <-->|WebSocket| WS_S
+    UI -->|HTTP REST| EX
+    
+    EX --> CACHE
+    WS_S --> CACHE
+    CACHE --> GH
+    GH -->|REST API| API
+</div>
+
+<h2>Principios de Arquitectura</h2>
+<ol>
+<li><strong>Tiempo Real First</strong>: Comunicación WebSocket para actualizaciones instantáneas sin polling</li>
+<li><strong>Offline Capable</strong>: PWA con Service Worker para funcionamiento sin conexión</li>
+<li><strong>Caché Inteligente</strong>: Datos en memoria con TTL para reducir llamadas a GitHub API</li>
+<li><strong>Componentes Reutilizables</strong>: UI modular con componentes aislados y composables</li>
+<li><strong>Type Safety</strong>: TypeScript en toda la codebase para prevenir errores en runtime</li>
+</ol>
+<h2>Flujo de Datos Principal</h2>
+<div class="mermaid">
+sequenceDiagram
+    autonumber
+    
+    actor U as Usuario
+    participant F as Frontend
+    participant WS as WebSocket
+    participant B as Backend
+    participant C as Cache
+    participant G as GitHub API
+    
+    U->>F: Accede al dashboard
+    F->>WS: Conecta WebSocket
+    WS->>B: subscribe("dashboard")
+    
+    B->>C: Buscar datos en caché
+    
+    alt Caché válido
+        C-->>B: Datos cacheados
+        B-->>WS: initial(data)
+    else Caché expirado/vacío
+        B->>G: Fetch seats + PRs
+        G-->>B: Datos GitHub
+        B->>C: Guardar en caché
+        B-->>WS: initial(data)
+    end
+    
+    WS-->>F: Datos dashboard
+    F-->>U: Renderiza métricas
+    
+    Note over U,G: Actualización manual
+    U->>F: Click "Refresh"
+    F->>WS: refresh()
+    WS->>B: Trigger refresh
+    B->>G: Fetch datos frescos
+    G-->>B: Nuevos datos
+    B->>C: Actualizar caché
+    B-->>WS: update(newData)
+    WS-->>F: Broadcast a clientes
+    F-->>U: UI actualizada
+</div>
+
+<h2>Estructura de Directorios</h2>
+<pre><code>copilot-metrics-portal/
+├── src/                    # Frontend React
+│   ├── components/         # Componentes UI reutilizables
+│   ├── pages/             # Páginas/vistas principales
+│   ├── hooks/             # Custom hooks (WebSocket, etc.)
+│   ├── services/          # Servicios (GitHub, WebSocket)
+│   ├── types/             # Definiciones TypeScript
+│   └── assets/            # Imágenes y recursos
+├── server/                # Backend Node.js
+│   └── src/
+│       ├── index.ts       # Entry point servidor
+│       ├── cache.ts       # Sistema de caché
+│       ├── githubService.ts # Cliente GitHub API
+│       └── types.ts       # Tipos compartidos
+├── public/                # Assets estáticos
+└── docs/                  # Documentación
+</code></pre>
+<h2>Índice de Documentación</h2>
+<h3>Componentes</h3>
+<ul>
+<li><a href="components/comp-frontend.html">Frontend React</a></li>
+<li><a href="components/comp-backend.html">Backend WebSocket</a></li>
+<li><a href="components/comp-cache.html">Sistema de Caché</a></li>
+<li><a href="components/comp-github-service.html">Servicio GitHub</a></li>
+</ul>
+<h3>Diagramas</h3>
+<ul>
+<li><a href="diagrams/architecture.html">Arquitectura General</a></li>
+<li><a href="diagrams/data-flow.html">Flujo de Datos</a></li>
+<li><a href="diagrams/data-model.html">Modelo de Datos</a></li>
+</ul>
+<h3>Decisiones de Arquitectura (ADR)</h3>
+<ul>
+<li><a href="decisions/adr-001-websocket.html">ADR-001: WebSocket vs Polling</a></li>
+<li><a href="decisions/adr-002-memory-cache.html">ADR-002: Caché en Memoria</a></li>
+<li><a href="decisions/adr-003-pwa.html">ADR-003: PWA para Offline</a></li>
+</ul>
+
+    </article>
+    <footer class="doc-footer">
+        <p>Documentación generada automáticamente el 04/02/2026, 10:02</p>
+    </footer>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            securityLevel: 'loose',
+            flowchart: { useMaxWidth: true, htmlLabels: true }
+        });
+    </script>
+</body>
+</html>

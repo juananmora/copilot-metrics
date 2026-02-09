@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicios - Capa de Datos</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --background-color: #ffffff;
+            --surface-color: #f8fafc;
+            --text-color: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --code-bg: #f1f5f9;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .nav-breadcrumb {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--surface-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+        
+        .nav-breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .nav-breadcrumb a:hover { text-decoration: underline; }
+        
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h2 {
+            font-size: 1.875rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h3 { font-size: 1.5rem; }
+        h4 { font-size: 1.25rem; color: var(--secondary-color); }
+        
+        p { margin-bottom: 1rem; }
+        
+        a { color: var(--primary-color); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        ul, ol { margin-bottom: 1rem; padding-left: 2rem; }
+        li { margin-bottom: 0.5rem; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border: 1px solid var(--border-color);
+        }
+        
+        th {
+            background-color: var(--surface-color);
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) { background-color: var(--surface-color); }
+        tr:hover { background-color: #f1f5f9; }
+        
+        code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            background-color: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+        
+        pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            color: inherit;
+        }
+        
+        .mermaid {
+            background-color: var(--surface-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        
+        blockquote {
+            border-left: 4px solid var(--primary-color);
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            background-color: var(--surface-color);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        blockquote p:last-child { margin-bottom: 0; }
+        
+        hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2rem 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .doc-footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.875rem; }
+            h2 { font-size: 1.5rem; }
+            table { display: block; overflow-x: auto; }
+        }
+        
+        @media print {
+            body { max-width: none; padding: 0; }
+            .nav-breadcrumb { display: none; }
+            pre { white-space: pre-wrap; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-breadcrumb"><a href="index.html">Inicio</a> / <a href="../../index.html">architecture</a> / <a href="../index.html">components</a> / <span>comp-services</span></nav>
+    <article>
+        <h1>Servicios - Capa de Datos</h1>
+<h2>Visión General</h2>
+<p>La capa de servicios gestiona toda la comunicación con APIs externas y el almacenamiento local. Está compuesta por tres módulos principales:</p>
+<div class="mermaid">
+graph LR
+    subgraph "Services Layer"
+        GH[github.ts]
+        TOKEN[tokenService.ts]
+        CACHE[offlineCache.ts]
+    end
+    
+    subgraph "External"
+        API[GitHub Enterprise API]
+    end
+    
+    subgraph "Storage"
+        LS[(localStorage)]
+    end
+    
+    GH --> TOKEN
+    GH --> CACHE
+    GH --> API
+    TOKEN --> LS
+    CACHE --> LS
+</div>
+
+<h2>github.ts - Servicio Principal</h2>
+<h3>Descripción</h3>
+<p>Servicio central que maneja todas las operaciones con la API de GitHub Enterprise. Implementa:</p>
+<ul>
+<li>Fetching de datos de Copilot Seats</li>
+<li>Búsqueda de Pull Requests</li>
+<li>Procesamiento y cálculo de estadísticas</li>
+<li>Fallback a datos mock cuando la API no está disponible</li>
+</ul>
+<h3>Diagrama de Clases</h3>
+<div class="mermaid">
+classDiagram
+    class GitHubService {
+        -API_BASE_URL: string
+        -ORGANIZATION: string
+        -useMockData: boolean
+        +fetchCopilotSeats() Promise~SeatsData~
+        +fetchCopilotPRs() Promise~ProcessedPR[]~
+        +fetchDashboardData() Promise~DashboardData~
+        +calculateSeatsStats() SeatsStats
+        +calculatePRStats() PRStats
+    }
+    
+    class CopilotSeatsResponse {
+        +total_seats: number
+        +seats: CopilotSeat[]
+    }
+    
+    class ProcessedSeat {
+        +login: string
+        +name: string
+        +email: string
+        +planType: string
+        +lastActivityAt: string
+        +lastActivityEditor: string
+        +isActive: boolean
+        +prCount: number
+    }
+    
+    class ProcessedPR {
+        +number: number
+        +title: string
+        +state: string
+        +isMerged: boolean
+        +repository: string
+        +customAgent: string
+        +daysToClose: number
+    }
+    
+    GitHubService --> CopilotSeatsResponse
+    GitHubService --> ProcessedSeat
+    GitHubService --> ProcessedPR
+</div>
+
+<h3>Flujo de Datos</h3>
+<div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant Page
+    participant RQ as React Query
+    participant GH as github.ts
+    participant API as GitHub API
+    participant Cache as offlineCache
+    
+    Page->>RQ: useQuery('dashboard')
+    RQ->>GH: fetchDashboardData()
+    
+    alt Online
+        GH->>API: GET /orgs/{org}/copilot/billing/seats
+        API-->>GH: CopilotSeatsResponse
+        GH->>GH: calculateSeatsStats()
+        
+        GH->>API: GET /search/issues?q=author:copilot-swe-agent
+        API-->>GH: SearchResponse
+        GH->>GH: calculatePRStats()
+        
+        GH->>Cache: saveToCache(data)
+        GH-->>RQ: DashboardData
+    else Offline o Error
+        GH->>Cache: getFromCache()
+        Cache-->>GH: cachedData
+        GH-->>RQ: DashboardData (cached)
+    end
+    
+    RQ-->>Page: data
+</div>
+
+<h3>Funciones Principales</h3>
+<h4>fetchCopilotSeats()</h4>
+<pre><code class="language-typescript">async function fetchCopilotSeats(): Promise&lt;{
+  totalSeats: number;
+  seats: ProcessedSeat[];
+}&gt;
+</code></pre>
+<p><strong>Proceso:</strong></p>
+<ol>
+<li>Consulta paginada a <code>/orgs/{org}/copilot/billing/seats</code></li>
+<li>Procesa cada seat extrayendo información relevante</li>
+<li>Calcula <code>agentUsageCount</code> basado en actividad reciente</li>
+<li>Retorna lista de usuarios con licencia Copilot</li>
+</ol>
+<h4>fetchCopilotPRs()</h4>
+<pre><code class="language-typescript">async function fetchCopilotPRs(): Promise&lt;ProcessedPR[]&gt;
+</code></pre>
+<p><strong>Proceso:</strong></p>
+<ol>
+<li>Búsqueda de PRs con <code>author:app/copilot-swe-agent</code></li>
+<li>Extrae Custom Agent del body del PR</li>
+<li>Calcula métricas de tiempo (daysToClose)</li>
+<li>Identifica assignees</li>
+</ol>
+<h4>calculatePRStats()</h4>
+<p>Calcula estadísticas agregadas:</p>
+<ul>
+<li>Totales: open, closed, merged, rejected</li>
+<li>Rates: mergeRate, rejectionRate, pendingRate</li>
+<li>Tiempo: avgDaysToClose, min, max</li>
+<li>Rankings: topRepos, topAgents</li>
+<li>Efectividad por agente y repositorio</li>
+</ul>
+<h3>Manejo de Errores</h3>
+<div class="mermaid">
+flowchart TD
+    A[Fetch Data] --> B{Success?}
+    B -->|Yes| C[Return Data]
+    B -->|No| D{Network Error?}
+    D -->|Yes| E[Switch to Mock]
+    D -->|No| F{Empty Response?}
+    F -->|Yes| E
+    F -->|No| G[Throw Error]
+    E --> H[Return Mock Data]
+</div>
+
+<hr>
+<h2>tokenService.ts - Gestión de Tokens</h2>
+<h3>Descripción</h3>
+<p>Gestiona el token de autenticación para GitHub API de forma segura.</p>
+<h3>Funciones</h3>
+<pre><code class="language-typescript">// Obtener token efectivo (custom o default)
+function getEffectiveToken(): string
+
+// Establecer token personalizado
+function setCustomToken(token: string): void
+
+// Limpiar token personalizado
+function clearCustomToken(): void
+
+// Verificar si hay token custom
+function hasCustomToken(): boolean
+</code></pre>
+<h3>Flujo de Token</h3>
+<div class="mermaid">
+flowchart LR
+    REQ[API Request] --> CHECK{Custom Token?}
+    CHECK -->|Yes| CUSTOM[Use Custom Token]
+    CHECK -->|No| DEFAULT[Use Default Token]
+    CUSTOM --> API[GitHub API]
+    DEFAULT --> API
+</div>
+
+<hr>
+<h2>offlineCache.ts - Cache Offline</h2>
+<h3>Descripción</h3>
+<p>Implementa persistencia local para soporte offline usando localStorage.</p>
+<h3>Estructura del Cache</h3>
+<pre><code class="language-typescript">interface CachedData {
+  data: DashboardData;
+  timestamp: number;
+  version: string;
+}
+</code></pre>
+<h3>Funciones</h3>
+<pre><code class="language-typescript">// Guardar datos en cache
+function saveToCache(data: DashboardData): void
+
+// Obtener datos del cache
+function getFromCache(): CachedData | null
+
+// Verificar si cache es válido
+function isCacheValid(cached: CachedData): boolean
+
+// Limpiar cache
+function clearCache(): void
+</code></pre>
+<h3>Política de Expiración</h3>
+<div class="mermaid">
+flowchart TD
+    A[Get from Cache] --> B{Cache Exists?}
+    B -->|No| C[Return null]
+    B -->|Yes| D{Age < 24h?}
+    D -->|No| C
+    D -->|Yes| E{Version Match?}
+    E -->|No| C
+    E -->|Yes| F[Return Cached Data]
+</div>
+
+<hr>
+<h2>Configuración del Proxy</h2>
+<h3>vite.config.ts</h3>
+<pre><code class="language-typescript">export default defineConfig({
+  server: {
+    proxy: {
+      &#39;/github-api&#39;: {
+        target: &#39;https://bbva.ghe.com/api/v3&#39;,
+        changeOrigin: true,
+        rewrite: (path) =&gt; path.replace(/^\/github-api/, &#39;&#39;),
+        secure: false
+      }
+    }
+  }
+})
+</code></pre>
+<h3>Diagrama de Proxy</h3>
+<div class="mermaid">
+sequenceDiagram
+    participant Browser
+    participant Vite as Vite Dev Server
+    participant GHE as GitHub Enterprise
+    
+    Browser->>Vite: GET /github-api/orgs/org/...
+    Note over Vite: Rewrite path
+    Vite->>GHE: GET /api/v3/orgs/org/...
+    GHE-->>Vite: Response
+    Vite-->>Browser: Response (CORS OK)
+</div>
+
+<hr>
+<h2>Tipos de Datos</h2>
+<h3>Tipos de Entrada (API)</h3>
+<pre><code class="language-typescript">interface CopilotSeat {
+  assignee: {
+    login: string;
+    name?: string;
+    email?: string;
+    avatar_url?: string;
+  };
+  plan_type: string;
+  created_at: string;
+  last_activity_at: string | null;
+  last_activity_editor: string | null;
+}
+
+interface PullRequest {
+  number: number;
+  title: string;
+  state: &#39;open&#39; | &#39;closed&#39;;
+  html_url: string;
+  created_at: string;
+  closed_at: string | null;
+  body: string | null;
+  comments: number;
+  pull_request?: { merged_at: string | null };
+}
+</code></pre>
+<h3>Tipos de Salida (Procesados)</h3>
+<pre><code class="language-typescript">interface DashboardData {
+  seats: SeatsStats | null;
+  seatsList: ProcessedSeat[];
+  prs: PRStats;
+  prList: ProcessedPR[];
+  lastUpdated: string;
+  isLiveData: boolean;
+  dataSource: string;
+}
+
+interface PRStats {
+  total: number;
+  open: number;
+  merged: number;
+  rejected: number;
+  mergeRate: number;
+  topRepos: Array&lt;{ name: string; count: number }&gt;;
+  topAgents: Array&lt;{ name: string; count: number }&gt;;
+  agentEffectiveness: AgentStats[];
+  // ... más campos
+}
+</code></pre>
+<hr>
+<h2>Consideraciones de Rendimiento</h2>
+<ol>
+<li><strong>Paginación</strong>: Las llamadas a API usan paginación (100 items/página)</li>
+<li><strong>Rate Limiting</strong>: Delays de 300-500ms entre páginas</li>
+<li><strong>Caching</strong>: React Query con staleTime de 5 minutos</li>
+<li><strong>Memoization</strong>: Cálculos pesados solo cuando cambian datos</li>
+</ol>
+<h2>Seguridad</h2>
+<ol>
+<li><strong>Tokens</strong>: Nunca se exponen en código</li>
+<li><strong>CORS</strong>: Proxy evita problemas de cross-origin</li>
+<li><strong>HTTPS</strong>: Todas las comunicaciones cifradas</li>
+<li><strong>Sanitización</strong>: Datos de entrada validados</li>
+</ol>
+
+    </article>
+    <footer class="doc-footer">
+        <p>Documentación generada automáticamente el 04/02/2026, 10:02</p>
+    </footer>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            securityLevel: 'loose',
+            flowchart: { useMaxWidth: true, htmlLabels: true }
+        });
+    </script>
+</body>
+</html>

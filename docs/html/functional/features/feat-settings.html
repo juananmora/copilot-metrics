@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F006 - Configuración</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --background-color: #ffffff;
+            --surface-color: #f8fafc;
+            --text-color: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --code-bg: #f1f5f9;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .nav-breadcrumb {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--surface-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+        
+        .nav-breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .nav-breadcrumb a:hover { text-decoration: underline; }
+        
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h2 {
+            font-size: 1.875rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h3 { font-size: 1.5rem; }
+        h4 { font-size: 1.25rem; color: var(--secondary-color); }
+        
+        p { margin-bottom: 1rem; }
+        
+        a { color: var(--primary-color); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        ul, ol { margin-bottom: 1rem; padding-left: 2rem; }
+        li { margin-bottom: 0.5rem; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border: 1px solid var(--border-color);
+        }
+        
+        th {
+            background-color: var(--surface-color);
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) { background-color: var(--surface-color); }
+        tr:hover { background-color: #f1f5f9; }
+        
+        code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            background-color: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+        
+        pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            color: inherit;
+        }
+        
+        .mermaid {
+            background-color: var(--surface-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        
+        blockquote {
+            border-left: 4px solid var(--primary-color);
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            background-color: var(--surface-color);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        blockquote p:last-child { margin-bottom: 0; }
+        
+        hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2rem 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .doc-footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.875rem; }
+            h2 { font-size: 1.5rem; }
+            table { display: block; overflow-x: auto; }
+        }
+        
+        @media print {
+            body { max-width: none; padding: 0; }
+            .nav-breadcrumb { display: none; }
+            pre { white-space: pre-wrap; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-breadcrumb"><a href="index.html">Inicio</a> / <a href="../../index.html">functional</a> / <a href="../index.html">features</a> / <span>feat-settings</span></nav>
+    <article>
+        <h1>F006 - Configuración</h1>
+<p><strong>ID</strong>: F006
+<strong>Módulo</strong>: Settings
+<strong>Estado</strong>: Activo</p>
+<h2>Resumen</h2>
+<p>La página de Configuración permite a los usuarios personalizar la aplicación, principalmente la gestión del token de API de GitHub para acceder a datos reales.</p>
+<h2>Diagrama de la Página</h2>
+<div class="mermaid">
+graph TB
+    subgraph "Settings Page"
+        HEADER[Configuración]
+        
+        subgraph "Token Section"
+            T1[Input Token]
+            T2[Botón Guardar]
+            T3[Botón Limpiar]
+            T4[Estado Actual]
+        end
+        
+        subgraph "Info Section"
+            I1[Instrucciones]
+            I2[Permisos Requeridos]
+        end
+    end
+</div>
+
+<h2>Funcionalidades</h2>
+<h3>1. Gestión de Token</h3>
+<h4>Establecer Token</h4>
+<p><strong>Flujo:</strong></p>
+<ol>
+<li>Usuario ingresa token en campo</li>
+<li>Token se valida (formato básico)</li>
+<li>Token se guarda en localStorage</li>
+<li>Sistema muestra confirmación</li>
+</ol>
+<h4>Limpiar Token</h4>
+<p><strong>Flujo:</strong></p>
+<ol>
+<li>Usuario hace clic en &quot;Limpiar&quot;</li>
+<li>Sistema elimina token de localStorage</li>
+<li>Sistema vuelve a token por defecto (demo)</li>
+</ol>
+<h3>2. Estado del Token</h3>
+<table>
+<thead>
+<tr>
+<th>Estado</th>
+<th>Indicador</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Custom</td>
+<td>Badge verde</td>
+<td>Token personalizado activo</td>
+</tr>
+<tr>
+<td>Default</td>
+<td>Badge gris</td>
+<td>Usando token demo</td>
+</tr>
+<tr>
+<td>Invalid</td>
+<td>Badge rojo</td>
+<td>Token inválido</td>
+</tr>
+</tbody></table>
+<h2>Casos de Uso</h2>
+<h3>CU001 - Configurar token personal</h3>
+<p><strong>Actor</strong>: Administrador</p>
+<p><strong>Precondiciones:</strong></p>
+<ul>
+<li>Usuario tiene PAT de GitHub con permisos correctos</li>
+</ul>
+<p><strong>Flujo:</strong></p>
+<ol>
+<li>Usuario navega a Settings</li>
+<li>Usuario ingresa su PAT</li>
+<li>Usuario hace clic en &quot;Guardar&quot;</li>
+<li>Sistema valida formato</li>
+<li>Sistema guarda token</li>
+<li>Sistema muestra confirmación</li>
+<li>Próximas consultas usan token personal</li>
+</ol>
+<p><strong>Postcondiciones:</strong></p>
+<ul>
+<li>Token guardado en localStorage</li>
+<li>API usa token personal</li>
+</ul>
+<h3>CU002 - Volver a modo demo</h3>
+<p><strong>Actor</strong>: Usuario</p>
+<p><strong>Flujo:</strong></p>
+<ol>
+<li>Usuario navega a Settings</li>
+<li>Usuario hace clic en &quot;Limpiar Token&quot;</li>
+<li>Sistema elimina token personalizado</li>
+<li>Sistema muestra confirmación</li>
+<li>Próximas consultas usan datos mock</li>
+</ol>
+<h2>Diagrama de Flujo</h2>
+<div class="mermaid">
+flowchart TD
+    A[Abrir Settings] --> B{Token Custom?}
+    B -->|Sí| C[Mostrar estado "Personalizado"]
+    B -->|No| D[Mostrar estado "Demo"]
+    
+    C --> E{Acción?}
+    D --> E
+    
+    E -->|Guardar Nuevo| F[Validar Token]
+    E -->|Limpiar| G[Eliminar Token]
+    
+    F --> H{Válido?}
+    H -->|Sí| I[Guardar en localStorage]
+    H -->|No| J[Mostrar Error]
+    
+    I --> K[Actualizar UI]
+    G --> K
+    J --> E
+</div>
+
+<h2>Seguridad del Token</h2>
+<h3>Almacenamiento</h3>
+<div class="mermaid">
+flowchart LR
+    TOKEN[Token PAT] --> ENCODE[Opcional: Encode]
+    ENCODE --> LS[(localStorage)]
+    LS --> DECODE[Decode]
+    DECODE --> API[API Request]
+</div>
+
+<p><strong>Consideraciones:</strong></p>
+<ul>
+<li>Token se guarda en localStorage del navegador</li>
+<li>No se transmite a ningún servidor propio</li>
+<li>Solo se envía a GitHub API</li>
+<li>Se recomienda usar tokens con permisos mínimos</li>
+</ul>
+<h3>Permisos Requeridos</h3>
+<table>
+<thead>
+<tr>
+<th>Permiso</th>
+<th>Propósito</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>read:org</code></td>
+<td>Leer datos de organización</td>
+</tr>
+<tr>
+<td><code>admin:org</code></td>
+<td>Acceso a billing de Copilot</td>
+</tr>
+<tr>
+<td><code>repo</code></td>
+<td>Leer PRs y issues</td>
+</tr>
+</tbody></table>
+<h2>Instrucciones para Crear Token</h2>
+<ol>
+<li>Ir a GitHub Settings &gt; Developer Settings</li>
+<li>Personal Access Tokens &gt; Tokens (classic)</li>
+<li>Generate new token</li>
+<li>Seleccionar permisos requeridos</li>
+<li>Copiar token generado</li>
+<li>Pegar en Settings de la aplicación</li>
+</ol>
+<h2>Modelo de Datos</h2>
+<pre><code class="language-typescript">interface TokenConfig {
+  customToken: string | null;
+  isValid: boolean;
+  lastValidated: Date | null;
+}
+</code></pre>
+<h2>Validaciones</h2>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Validación</th>
+<th>Mensaje</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Token</td>
+<td>No vacío</td>
+<td>&quot;El token no puede estar vacío&quot;</td>
+</tr>
+<tr>
+<td>Token</td>
+<td>Formato PAT</td>
+<td>&quot;Formato de token inválido&quot;</td>
+</tr>
+</tbody></table>
+<h2>Persistencia</h2>
+<table>
+<thead>
+<tr>
+<th>Dato</th>
+<th>Storage</th>
+<th>Clave</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Token</td>
+<td>localStorage</td>
+<td><code>copilot_metrics_token</code></td>
+</tr>
+</tbody></table>
+<h2>Mensajes del Sistema</h2>
+<table>
+<thead>
+<tr>
+<th>Código</th>
+<th>Tipo</th>
+<th>Mensaje</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MSG001</td>
+<td>Éxito</td>
+<td>&quot;Token guardado correctamente&quot;</td>
+</tr>
+<tr>
+<td>MSG002</td>
+<td>Éxito</td>
+<td>&quot;Token eliminado&quot;</td>
+</tr>
+<tr>
+<td>ERR001</td>
+<td>Error</td>
+<td>&quot;Token inválido&quot;</td>
+</tr>
+<tr>
+<td>INFO01</td>
+<td>Info</td>
+<td>&quot;Usando datos de demostración&quot;</td>
+</tr>
+</tbody></table>
+<h2>Flujo de Token en API</h2>
+<div class="mermaid">
+sequenceDiagram
+    participant Settings
+    participant TokenService
+    participant GitHub as github.ts
+    participant API
+    
+    Settings->>TokenService: setCustomToken(token)
+    TokenService->>TokenService: Guardar en localStorage
+    
+    Note over GitHub: Próxima request...
+    
+    GitHub->>TokenService: getEffectiveToken()
+    TokenService-->>GitHub: customToken || defaultToken
+    GitHub->>API: Request con token
+</div>
+
+<h2>Referencias</h2>
+<ul>
+<li><a href="../../architecture/components/comp-services.html">Token Service</a></li>
+<li><a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens">Documentación GitHub PAT</a></li>
+</ul>
+
+    </article>
+    <footer class="doc-footer">
+        <p>Documentación generada automáticamente el 04/02/2026, 10:02</p>
+    </footer>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            securityLevel: 'loose',
+            flowchart: { useMaxWidth: true, htmlLabels: true }
+        });
+    </script>
+</body>
+</html>

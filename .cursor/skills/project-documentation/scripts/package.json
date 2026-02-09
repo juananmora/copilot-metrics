@@ -1,0 +1,14 @@
+{
+  "name": "md-to-html-converter",
+  "version": "1.0.0",
+  "description": "Conversor de Markdown a HTML con soporte Mermaid",
+  "main": "md-to-html.js",
+  "scripts": {
+    "convert": "node md-to-html.js"
+  },
+  "dependencies": {
+    "marked": "^12.0.0",
+    "marked-gfm-heading-id": "^3.1.0",
+    "glob": "^10.3.0"
+  }
+}

@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Componentes - Visión General</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --background-color: #ffffff;
+            --surface-color: #f8fafc;
+            --text-color: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --code-bg: #f1f5f9;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .nav-breadcrumb {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--surface-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+        
+        .nav-breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .nav-breadcrumb a:hover { text-decoration: underline; }
+        
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h2 {
+            font-size: 1.875rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h3 { font-size: 1.5rem; }
+        h4 { font-size: 1.25rem; color: var(--secondary-color); }
+        
+        p { margin-bottom: 1rem; }
+        
+        a { color: var(--primary-color); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        ul, ol { margin-bottom: 1rem; padding-left: 2rem; }
+        li { margin-bottom: 0.5rem; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border: 1px solid var(--border-color);
+        }
+        
+        th {
+            background-color: var(--surface-color);
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) { background-color: var(--surface-color); }
+        tr:hover { background-color: #f1f5f9; }
+        
+        code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            background-color: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+        
+        pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            color: inherit;
+        }
+        
+        .mermaid {
+            background-color: var(--surface-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        
+        blockquote {
+            border-left: 4px solid var(--primary-color);
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            background-color: var(--surface-color);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        blockquote p:last-child { margin-bottom: 0; }
+        
+        hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2rem 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .doc-footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.875rem; }
+            h2 { font-size: 1.5rem; }
+            table { display: block; overflow-x: auto; }
+        }
+        
+        @media print {
+            body { max-width: none; padding: 0; }
+            .nav-breadcrumb { display: none; }
+            pre { white-space: pre-wrap; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-breadcrumb"><a href="index.html">Inicio</a> / <a href="../../index.html">architecture</a> / <a href="../index.html">components</a> / <span>comp-overview</span></nav>
+    <article>
+        <h1>Componentes - Visión General</h1>
+<h2>Diagrama de Componentes</h2>
+<div class="mermaid">
+graph TB
+    subgraph "Layout Components"
+        LAYOUT[Layout]
+        HEADER[Header]
+        NAVBAR[NavBar]
+        FOOTER[Footer]
+    end
+    
+    subgraph "Page Components"
+        OVERVIEW[OverviewPage]
+        PRS[PullRequestsPage]
+        AGENTS[AgentsPage]
+        USERS[UsersPage]
+        EXEC[ExecutiveDashboard]
+        SETTINGS[SettingsPage]
+    end
+    
+    subgraph "Dashboard Components"
+        AIBANNER[AIBanner]
+        KPICARD[KPICard]
+        EFFECT[EffectivenessPanel]
+        ADOPTION[AdoptionPanel]
+        TIMESTATS[TimeStats]
+    end
+    
+    subgraph "Chart Components"
+        CHARTS[Charts]
+        AGENTCHARTS[AgentCharts]
+        CONTRIB[ContributionGraph]
+    end
+    
+    subgraph "Table Components"
+        PRTABLE[PRTable]
+        USERSTABLE[TopUsersTable]
+        AGENTEFF[AgentEffectiveness]
+    end
+    
+    subgraph "UI Components"
+        DIVIDER[SectionDivider]
+        LOADING[Loading]
+        OFFLINE[OfflineBanner]
+        PWA[PWAInstallPrompt]
+    end
+    
+    LAYOUT --> HEADER
+    LAYOUT --> NAVBAR
+    LAYOUT --> FOOTER
+    
+    OVERVIEW --> AIBANNER
+    OVERVIEW --> KPICARD
+    OVERVIEW --> EFFECT
+    OVERVIEW --> CHARTS
+    
+    AGENTS --> AGENTCHARTS
+    AGENTS --> AGENTEFF
+    
+    USERS --> USERSTABLE
+    
+    PRS --> PRTABLE
+</div>
+
+<h2>Jerarquía de Componentes</h2>
+<div class="mermaid">
+classDiagram
+    class Layout {
+        +Header header
+        +NavBar navbar
+        +Outlet content
+        +Footer footer
+        +render()
+    }
+    
+    class Header {
+        -lastUpdated: string
+        -isLoading: boolean
+        -isLiveData: boolean
+        +onRefresh()
+    }
+    
+    class NavBar {
+        -currentPath: string
+        +navigate()
+    }
+    
+    class KPICard {
+        -title: string
+        -value: number
+        -icon: ReactNode
+        -color: string
+        -subtitle?: string
+    }
+    
+    class AIBanner {
+        -totalPRs: number
+        -mergeRate: number
+        -uniqueAgents: number
+        +render()
+    }
+    
+    class PRTable {
+        -prs: ProcessedPR[]
+        -sortConfig: SortConfig
+        -filters: FilterConfig
+        +sort()
+        +filter()
+        +paginate()
+    }
+    
+    Layout --> Header
+    Layout --> NavBar
+    Layout --> Footer
+    
+    AIBanner --> KPICard
+</div>
+
+<h2>Componentes Principales</h2>
+<h3>Layout (Contenedor Principal)</h3>
+<table>
+<thead>
+<tr>
+<th>Propiedad</th>
+<th>Tipo</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>children</td>
+<td>ReactNode</td>
+<td>Contenido de la página</td>
+</tr>
+</tbody></table>
+<p><strong>Responsabilidades:</strong></p>
+<ul>
+<li>Gestiona la estructura general de la aplicación</li>
+<li>Incluye Header, NavBar y Footer</li>
+<li>Usa React Router <code>&lt;Outlet&gt;</code> para contenido dinámico</li>
+<li>Maneja el estado global de datos via <code>useOutletContext</code></li>
+</ul>
+<h3>Header</h3>
+<table>
+<thead>
+<tr>
+<th>Propiedad</th>
+<th>Tipo</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>lastUpdated</td>
+<td>string</td>
+<td>Timestamp de última actualización</td>
+</tr>
+<tr>
+<td>onRefresh</td>
+<td>() =&gt; void</td>
+<td>Callback para refrescar datos</td>
+</tr>
+<tr>
+<td>isLoading</td>
+<td>boolean</td>
+<td>Estado de carga</td>
+</tr>
+<tr>
+<td>isLiveData</td>
+<td>boolean</td>
+<td>Indica si los datos son en vivo</td>
+</tr>
+<tr>
+<td>dataSource</td>
+<td>string</td>
+<td>Origen de los datos</td>
+</tr>
+</tbody></table>
+<h3>KPICard</h3>
+<table>
+<thead>
+<tr>
+<th>Propiedad</th>
+<th>Tipo</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>title</td>
+<td>string</td>
+<td>Título del KPI</td>
+</tr>
+<tr>
+<td>value</td>
+<td>number</td>
+<td>Valor numérico</td>
+</tr>
+<tr>
+<td>icon</td>
+<td>ReactNode</td>
+<td>Icono a mostrar</td>
+</tr>
+<tr>
+<td>color</td>
+<td>string</td>
+<td>Color del tema (blue, green, etc.)</td>
+</tr>
+<tr>
+<td>subtitle</td>
+<td>string?</td>
+<td>Texto adicional</td>
+</tr>
+</tbody></table>
+<h3>AIBanner</h3>
+<p>Banner principal que muestra métricas destacadas de Copilot.</p>
+<table>
+<thead>
+<tr>
+<th>Propiedad</th>
+<th>Tipo</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>totalPRs</td>
+<td>number</td>
+</tr>
+<tr>
+<td>withAgent</td>
+<td>number</td>
+</tr>
+<tr>
+<td>mergeRate</td>
+<td>number</td>
+</tr>
+<tr>
+<td>uniqueAgents</td>
+<td>number</td>
+</tr>
+<tr>
+<td>merged</td>
+<td>number</td>
+</tr>
+<tr>
+<td>avgDaysToClose</td>
+<td>number</td>
+</tr>
+<tr>
+<td>open</td>
+<td>number</td>
+</tr>
+<tr>
+<td>rejectionRate</td>
+<td>number</td>
+</tr>
+</tbody></table>
+<h2>Componentes de Gráficos</h2>
+<h3>Charts.tsx</h3>
+<p>Exporta múltiples componentes de visualización:</p>
+<ul>
+<li><strong>TopItemsChart</strong>: Gráfico de barras horizontal</li>
+<li><strong>DistributionPieChart</strong>: Gráfico de pastel</li>
+<li><strong>TrendChart</strong>: Gráfico de línea temporal</li>
+<li><strong>EditorDistribution</strong>: Distribución de editores</li>
+</ul>
+<h3>AgentCharts.tsx</h3>
+<p>Componentes específicos para análisis de agentes:</p>
+<ul>
+<li><strong>AgentDistributionChart</strong>: Distribución por agente</li>
+<li><strong>AgentEffectivenessChart</strong>: Efectividad comparativa</li>
+<li><strong>AgentUsageBarChart</strong>: Uso por agente</li>
+<li><strong>AgentRadarChart</strong>: Radar de métricas</li>
+<li><strong>AgentSummaryCards</strong>: Cards resumen</li>
+</ul>
+<h3>ContributionGraph</h3>
+<p>Grafo de contribuciones estilo GitHub.</p>
+<div class="mermaid">
+flowchart LR
+    DATA[Activity Data] --> CALC[Calculate Grid]
+    CALC --> RENDER[Render Cells]
+    RENDER --> TOOLTIP[Show Tooltips]
+</div>
+
+<h2>Componentes de Tablas</h2>
+<h3>PRTable</h3>
+<p>Tabla paginada y filtrable de Pull Requests.</p>
+<p><strong>Características:</strong></p>
+<ul>
+<li>Ordenación por múltiples columnas</li>
+<li>Filtrado por estado, repositorio, agente</li>
+<li>Paginación</li>
+<li>Exportación (futuro)</li>
+</ul>
+<h3>TopUsersTable</h3>
+<p>Tabla de usuarios con más actividad.</p>
+<h3>AgentEffectiveness</h3>
+<p>Tabla comparativa de efectividad de agentes.</p>
+<h2>Patrones de Diseño</h2>
+<h3>1. Compound Components</h3>
+<p>Algunos componentes usan el patrón de componentes compuestos:</p>
+<pre><code class="language-typescript">&lt;SectionDivider variant=&quot;tech&quot; icon=&quot;sparkles&quot; text=&quot;Adopción&quot; /&gt;
+</code></pre>
+<h3>2. Render Props</h3>
+<p>Para componentes con lógica compartida:</p>
+<pre><code class="language-typescript">&lt;AnimatedNumber value={100} duration={1500} decimals={1} suffix=&quot;%&quot; /&gt;
+</code></pre>
+<h3>3. Presentational + Container</h3>
+<ul>
+<li><strong>Presentational</strong>: KPICard, Charts (solo UI)</li>
+<li><strong>Container</strong>: Pages (conectan datos con UI)</li>
+</ul>
+<h2>Índice de Componentes</h2>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Archivo</th>
+<th>Categoría</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Layout</td>
+<td>Layout.tsx</td>
+<td>Layout</td>
+</tr>
+<tr>
+<td>Header</td>
+<td>Header.tsx</td>
+<td>Layout</td>
+</tr>
+<tr>
+<td>NavBar</td>
+<td>NavBar.tsx</td>
+<td>Layout</td>
+</tr>
+<tr>
+<td>Footer</td>
+<td>Footer.tsx</td>
+<td>Layout</td>
+</tr>
+<tr>
+<td>AIBanner</td>
+<td>AIBanner.tsx</td>
+<td>Dashboard</td>
+</tr>
+<tr>
+<td>KPICard</td>
+<td>KPICard.tsx</td>
+<td>Dashboard</td>
+</tr>
+<tr>
+<td>EffectivenessPanel</td>
+<td>EffectivenessPanel.tsx</td>
+<td>Dashboard</td>
+</tr>
+<tr>
+<td>AdoptionPanel</td>
+<td>AdoptionPanel.tsx</td>
+<td>Dashboard</td>
+</tr>
+<tr>
+<td>TimeStats</td>
+<td>TimeStats.tsx</td>
+<td>Dashboard</td>
+</tr>
+<tr>
+<td>Charts</td>
+<td>Charts.tsx</td>
+<td>Gráficos</td>
+</tr>
+<tr>
+<td>AgentCharts</td>
+<td>AgentCharts.tsx</td>
+<td>Gráficos</td>
+</tr>
+<tr>
+<td>ContributionGraph</td>
+<td>ContributionGraph.tsx</td>
+<td>Gráficos</td>
+</tr>
+<tr>
+<td>PRTable</td>
+<td>PRTable.tsx</td>
+<td>Tablas</td>
+</tr>
+<tr>
+<td>TopUsersTable</td>
+<td>TopUsersTable.tsx</td>
+<td>Tablas</td>
+</tr>
+<tr>
+<td>AgentEffectiveness</td>
+<td>AgentEffectiveness.tsx</td>
+<td>Tablas</td>
+</tr>
+<tr>
+<td>SectionDivider</td>
+<td>SectionDivider.tsx</td>
+<td>UI</td>
+</tr>
+<tr>
+<td>Loading</td>
+<td>Loading.tsx</td>
+<td>UI</td>
+</tr>
+<tr>
+<td>OfflineBanner</td>
+<td>OfflineBanner.tsx</td>
+<td>UI</td>
+</tr>
+<tr>
+<td>PWAInstallPrompt</td>
+<td>PWAInstallPrompt.tsx</td>
+<td>UI</td>
+</tr>
+</tbody></table>
+
+    </article>
+    <footer class="doc-footer">
+        <p>Documentación generada automáticamente el 04/02/2026, 10:02</p>
+    </footer>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            securityLevel: 'loose',
+            flowchart: { useMaxWidth: true, htmlLabels: true }
+        });
+    </script>
+</body>
+</html>

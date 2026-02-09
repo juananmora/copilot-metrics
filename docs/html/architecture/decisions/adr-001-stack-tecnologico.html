@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADR-001: Stack Tecnológico</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --background-color: #ffffff;
+            --surface-color: #f8fafc;
+            --text-color: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --code-bg: #f1f5f9;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .nav-breadcrumb {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--surface-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+        
+        .nav-breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .nav-breadcrumb a:hover { text-decoration: underline; }
+        
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h2 {
+            font-size: 1.875rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h3 { font-size: 1.5rem; }
+        h4 { font-size: 1.25rem; color: var(--secondary-color); }
+        
+        p { margin-bottom: 1rem; }
+        
+        a { color: var(--primary-color); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        ul, ol { margin-bottom: 1rem; padding-left: 2rem; }
+        li { margin-bottom: 0.5rem; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border: 1px solid var(--border-color);
+        }
+        
+        th {
+            background-color: var(--surface-color);
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) { background-color: var(--surface-color); }
+        tr:hover { background-color: #f1f5f9; }
+        
+        code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            background-color: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+        
+        pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            color: inherit;
+        }
+        
+        .mermaid {
+            background-color: var(--surface-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        
+        blockquote {
+            border-left: 4px solid var(--primary-color);
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            background-color: var(--surface-color);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        blockquote p:last-child { margin-bottom: 0; }
+        
+        hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2rem 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .doc-footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.875rem; }
+            h2 { font-size: 1.5rem; }
+            table { display: block; overflow-x: auto; }
+        }
+        
+        @media print {
+            body { max-width: none; padding: 0; }
+            .nav-breadcrumb { display: none; }
+            pre { white-space: pre-wrap; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-breadcrumb"><a href="index.html">Inicio</a> / <a href="../../index.html">architecture</a> / <a href="../index.html">decisions</a> / <span>adr-001-stack-tecnologico</span></nav>
+    <article>
+        <h1>ADR-001: Stack Tecnológico</h1>
+<p><strong>Estado</strong>: Aceptado
+<strong>Fecha</strong>: 2025-01-15
+<strong>Autores</strong>: Equipo de Desarrollo</p>
+<h2>Contexto</h2>
+<p>Se requiere desarrollar una aplicación web para visualizar métricas de GitHub Copilot en una organización. La aplicación debe:</p>
+<ul>
+<li>Ser accesible desde navegadores modernos</li>
+<li>Consumir datos de la API de GitHub Enterprise</li>
+<li>Mostrar dashboards interactivos con gráficos</li>
+<li>Funcionar offline (PWA)</li>
+<li>Tener un tiempo de desarrollo acotado</li>
+</ul>
+<h2>Decisión</h2>
+<p>Se decide utilizar el siguiente stack tecnológico:</p>
+<table>
+<thead>
+<tr>
+<th>Capa</th>
+<th>Tecnología</th>
+<th>Justificación</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Framework</strong></td>
+<td>React 19</td>
+<td>Ecosistema maduro, componentes declarativos</td>
+</tr>
+<tr>
+<td><strong>Routing</strong></td>
+<td>React Router DOM 7</td>
+<td>Estándar de facto para SPA</td>
+</tr>
+<tr>
+<td><strong>State/Data</strong></td>
+<td>TanStack Query 5</td>
+<td>Cache automático, manejo de estados async</td>
+</tr>
+<tr>
+<td><strong>HTTP</strong></td>
+<td>Axios</td>
+<td>Interceptores, transformaciones</td>
+</tr>
+<tr>
+<td><strong>Estilos</strong></td>
+<td>Tailwind CSS 3</td>
+<td>Desarrollo rápido, bundle optimizado</td>
+</tr>
+<tr>
+<td><strong>Gráficos</strong></td>
+<td>Recharts 3</td>
+<td>Basado en React, fácil personalización</td>
+</tr>
+<tr>
+<td><strong>Build</strong></td>
+<td>Vite 7</td>
+<td>Build rápido, HMR excelente</td>
+</tr>
+<tr>
+<td><strong>Lenguaje</strong></td>
+<td>TypeScript 5</td>
+<td>Seguridad de tipos, mejor DX</td>
+</tr>
+<tr>
+<td><strong>PWA</strong></td>
+<td>vite-plugin-pwa</td>
+<td>Integración simple con Vite</td>
+</tr>
+</tbody></table>
+<h3>Diagrama de Stack</h3>
+<div class="mermaid">
+graph TB
+    subgraph "Frontend Stack"
+        TS[TypeScript 5]
+        REACT[React 19]
+        ROUTER[React Router 7]
+        RQ[TanStack Query 5]
+        TW[Tailwind CSS 3]
+        CHARTS[Recharts 3]
+    end
+    
+    subgraph "Build & Dev"
+        VITE[Vite 7]
+        PWA[vite-plugin-pwa]
+    end
+    
+    subgraph "Data Layer"
+        AXIOS[Axios]
+        CACHE[localStorage]
+    end
+    
+    TS --> REACT
+    REACT --> ROUTER
+    REACT --> RQ
+    REACT --> TW
+    REACT --> CHARTS
+    
+    VITE --> TS
+    PWA --> VITE
+    
+    RQ --> AXIOS
+    AXIOS --> CACHE
+</div>
+
+<h2>Alternativas Consideradas</h2>
+<h3>Alternativa 1: Next.js</h3>
+<p><strong>Descripción</strong>: Framework fullstack con React</p>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>SSR/SSG out of the box</li>
+<li>Routing basado en archivos</li>
+<li>Optimizaciones automáticas</li>
+</ul>
+<p><strong>Contras</strong>:</p>
+<ul>
+<li>Overhead para una SPA simple</li>
+<li>No necesitamos SSR (datos son privados)</li>
+<li>Mayor complejidad de deployment</li>
+</ul>
+<h3>Alternativa 2: Vue.js + Nuxt</h3>
+<p><strong>Descripción</strong>: Framework alternativo a React</p>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Sintaxis más simple</li>
+<li>Mejor rendimiento en algunos casos</li>
+<li>Composition API potente</li>
+</ul>
+<p><strong>Contras</strong>:</p>
+<ul>
+<li>Menor ecosistema de librerías de gráficos</li>
+<li>Equipo más familiarizado con React</li>
+<li>Menos recursos de aprendizaje disponibles</li>
+</ul>
+<h3>Alternativa 3: Angular</h3>
+<p><strong>Descripción</strong>: Framework empresarial de Google</p>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Muy estructurado</li>
+<li>TypeScript nativo</li>
+<li>CLI potente</li>
+</ul>
+<p><strong>Contras</strong>:</p>
+<ul>
+<li>Curva de aprendizaje alta</li>
+<li>Verboso para aplicaciones pequeñas</li>
+<li>Bundle más grande</li>
+</ul>
+<h2>Justificación</h2>
+<p>Se eligió React + Vite porque:</p>
+<ol>
+<li><strong>Velocidad de desarrollo</strong>: El equipo tiene experiencia previa con React</li>
+<li><strong>Rendimiento</strong>: Vite ofrece HMR instantáneo y builds optimizados</li>
+<li><strong>Flexibilidad</strong>: React permite elegir las mejores librerías para cada necesidad</li>
+<li><strong>Comunidad</strong>: Amplia documentación y soporte de la comunidad</li>
+<li><strong>PWA</strong>: vite-plugin-pwa hace trivial agregar soporte offline</li>
+</ol>
+<h2>Consecuencias</h2>
+<h3>Positivas</h3>
+<ul>
+<li>Desarrollo rápido con herramientas familiares</li>
+<li>Excelente experiencia de desarrollo (DX)</li>
+<li>Bundle optimizado y rendimiento de producción</li>
+<li>Soporte PWA sin configuración adicional compleja</li>
+</ul>
+<h3>Negativas</h3>
+<ul>
+<li>Dependencia del ecosistema de React</li>
+<li>Necesidad de elegir librerías adicionales manualmente</li>
+<li>Sin SEO (no relevante para esta aplicación privada)</li>
+</ul>
+<h3>Riesgos</h3>
+<ul>
+<li><strong>Actualizaciones de dependencias</strong>: Mitigado con dependabot y tests</li>
+<li><strong>Breaking changes en React 19</strong>: Mitigado usando features estables</li>
+</ul>
+<h2>Referencias</h2>
+<ul>
+<li><a href="https://react.dev">React Documentation</a></li>
+<li><a href="https://vitejs.dev">Vite Documentation</a></li>
+<li><a href="https://tanstack.com/query">TanStack Query</a></li>
+<li><a href="https://tailwindcss.com">Tailwind CSS</a></li>
+<li><a href="https://recharts.org">Recharts</a></li>
+</ul>
+
+    </article>
+    <footer class="doc-footer">
+        <p>Documentación generada automáticamente el 04/02/2026, 10:02</p>
+    </footer>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            securityLevel: 'loose',
+            flowchart: { useMaxWidth: true, htmlLabels: true }
+        });
+    </script>
+</body>
+</html>

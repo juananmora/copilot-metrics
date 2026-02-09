@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#001891"/>
+      <stop offset="100%" style="stop-color:#004481"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="192" height="192" rx="32" fill="url(#bgGrad)"/>
+  <!-- Copilot-style icon -->
+  <g fill="white">
+    <!-- Main shape - stylized C -->
+    <path d="M96 36c-33.1 0-60 26.9-60 60s26.9 60 60 60c16.5 0 31.5-6.7 42.4-17.6l-14.1-14.1C115.3 133.3 106.2 138 96 138c-23.2 0-42-18.8-42-42s18.8-42 42-42c10.2 0 19.3 4.7 28.3 13.7l14.1-14.1C127.5 42.7 112.5 36 96 36z"/>
+    <!-- AI sparkle -->
+    <circle cx="130" cy="62" r="8" fill="#04E26A"/>
+    <circle cx="146" cy="78" r="5" fill="#04E26A" opacity="0.7"/>
+    <circle cx="140" cy="50" r="4" fill="#04E26A" opacity="0.5"/>
+  </g>
+  <!-- BBVA text -->
+  <text x="96" y="168" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="white" opacity="0.9">BBVA</text>
+</svg>

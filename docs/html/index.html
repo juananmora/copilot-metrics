@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación del Proyecto - Índice</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --background-color: #ffffff;
+            --surface-color: #f8fafc;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        .section {
+            background: var(--surface-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section h3 {
+            color: var(--secondary-color);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+        
+        ul { list-style: none; }
+        
+        li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        li:last-child { border-bottom: none; }
+        
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        a:hover { text-decoration: underline; }
+        
+        .file-path {
+            color: var(--secondary-color);
+            font-size: 0.875rem;
+            margin-left: 0.5rem;
+        }
+        
+        .footer {
+            margin-top: 3rem;
+            text-align: center;
+            color: var(--secondary-color);
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Documentación del Proyecto</h1>
+    <div class="section">
+            <h3>General</h3>
+            <ul><li>
+                <a href="REVIEW-REPORT.html">Reporte de Revisión de Documentación</a>
+                <span class="file-path">REVIEW-REPORT.html</span>
+            </li></ul>
+        </div>
+<div class="section">
+            <h3>architecture</h3>
+            <ul><li>
+                <a href="architecture\decisions\adr-001-websocket.html">ADR 001: WebSocket vs Polling para Tiempo Real</a>
+                <span class="file-path">architecture\decisions\adr-001-websocket.html</span>
+            </li>
+<li>
+                <a href="architecture\decisions\adr-001-stack-tecnologico.html">ADR-001: Stack Tecnológico</a>
+                <span class="file-path">architecture\decisions\adr-001-stack-tecnologico.html</span>
+            </li>
+<li>
+                <a href="architecture\components\comp-backend.html">Componente: Backend WebSocket Server</a>
+                <span class="file-path">architecture\components\comp-backend.html</span>
+            </li>
+<li>
+                <a href="architecture\components\comp-frontend.html">Componente: Frontend React</a>
+                <span class="file-path">architecture\components\comp-frontend.html</span>
+            </li>
+<li>
+                <a href="architecture\components\comp-overview.html">Componentes - Visión General</a>
+                <span class="file-path">architecture\components\comp-overview.html</span>
+            </li>
+<li>
+                <a href="architecture\overview.html">Copilot Metrics Portal - Documentación de Arquitectura</a>
+                <span class="file-path">architecture\overview.html</span>
+            </li>
+<li>
+                <a href="architecture\diagrams\system-architecture.html">Diagrama de Arquitectura del Sistema</a>
+                <span class="file-path">architecture\diagrams\system-architecture.html</span>
+            </li>
+<li>
+                <a href="architecture\diagrams\data-model.html">Modelo de Datos</a>
+                <span class="file-path">architecture\diagrams\data-model.html</span>
+            </li>
+<li>
+                <a href="architecture\components\comp-services.html">Servicios - Capa de Datos</a>
+                <span class="file-path">architecture\components\comp-services.html</span>
+            </li></ul>
+        </div>
+<div class="section">
+            <h3>functional</h3>
+            <ul><li>
+                <a href="functional\overview.html">Copilot Metrics Portal - Documentación Funcional</a>
+                <span class="file-path">functional\overview.html</span>
+            </li>
+<li>
+                <a href="functional\features\feat-pull-requests.html">F002 - Gestión de Pull Requests</a>
+                <span class="file-path">functional\features\feat-pull-requests.html</span>
+            </li>
+<li>
+                <a href="functional\features\feat-agents.html">F003 - Análisis de Custom Agents</a>
+                <span class="file-path">functional\features\feat-agents.html</span>
+            </li>
+<li>
+                <a href="functional\features\feat-users.html">F004 - Gestión de Usuarios</a>
+                <span class="file-path">functional\features\feat-users.html</span>
+            </li>
+<li>
+                <a href="functional\features\feat-executive.html">F005 - Dashboard Ejecutivo</a>
+                <span class="file-path">functional\features\feat-executive.html</span>
+            </li>
+<li>
+                <a href="functional\features\feat-settings.html">F006 - Configuración</a>
+                <span class="file-path">functional\features\feat-settings.html</span>
+            </li>
+<li>
+                <a href="functional\features\feat-overview.html">Funcionalidad: Overview Page</a>
+                <span class="file-path">functional\features\feat-overview.html</span>
+            </li></ul>
+        </div>
+
+    <footer class="footer">
+        <p>Documentación generada el 04/02/2026, 10:02</p>
+    </footer>
+</body>
+</html>

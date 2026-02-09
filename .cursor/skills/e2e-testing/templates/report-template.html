@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E2E Test Report - Copilot Metrics Portal</title>
+  <style>
+    :root {
+      --bbva-primary: #001891;
+      --bbva-navy: #070E46;
+      --bbva-blue: #004481;
+      --bbva-light: #1973B8;
+      --bbva-sky: #5BBEFF;
+      --bbva-green: #04E26A;
+      --bbva-coral: #F35E5E;
+      --gray-50: #F7F8F8;
+      --gray-100: #E5E7EB;
+      --gray-600: #4B5563;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--gray-50);
+      color: var(--bbva-navy);
+      line-height: 1.6;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--bbva-primary), var(--bbva-blue));
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .header .subtitle {
+      opacity: 0.9;
+      font-size: 1rem;
+    }
+
+    .header .timestamp {
+      margin-top: 1rem;
+      font-size: 0.875rem;
+      opacity: 0.8;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Summary Cards */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .summary-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0, 24, 145, 0.08);
+      border-left: 4px solid var(--bbva-primary);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .summary-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 24, 145, 0.12);
+    }
+
+    .summary-card.success { border-left-color: var(--bbva-green); }
+    .summary-card.warning { border-left-color: #F59E0B; }
+    .summary-card.error { border-left-color: var(--bbva-coral); }
+
+    .summary-card .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--gray-600);
+      margin-bottom: 0.5rem;
+    }
+
+    .summary-card .value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--bbva-primary);
+    }
+
+    .summary-card.success .value { color: var(--bbva-green); }
+    .summary-card.warning .value { color: #F59E0B; }
+    .summary-card.error .value { color: var(--bbva-coral); }
+
+    .summary-card .subtext {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+      margin-top: 0.25rem;
+    }
+
+    /* Section Cards */
+    .section-title {
+      font-size: 1.5rem;
+      color: var(--bbva-primary);
+      margin: 2rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--gray-100);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 1.5rem;
+      background: linear-gradient(to bottom, var(--bbva-primary), var(--bbva-green));
+      border-radius: 2px;
+    }
+
+    .test-section {
+      background: white;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 24, 145, 0.08);
+    }
+
+    .test-section-header {
+      background: linear-gradient(90deg, var(--bbva-primary), var(--bbva-blue));
+      color: white;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .test-section-header h3 {
+      font-size: 1.125rem;
+    }
+
+    .test-section-header .url {
+      font-size: 0.75rem;
+      opacity: 0.8;
+      font-family: monospace;
+    }
+
+    .test-section-body {
+      padding: 1.5rem;
+    }
+
+    /* Test Results Table */
+    .test-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .test-table th,
+    .test-table td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .test-table th {
+      background: var(--gray-50);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--gray-600);
+    }
+
+    .test-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .test-table tr:hover {
+      background: var(--gray-50);
+    }
+
+    /* Status Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge.passed {
+      background: rgba(4, 226, 106, 0.1);
+      color: #059669;
+    }
+
+    .badge.failed {
+      background: rgba(243, 94, 94, 0.1);
+      color: var(--bbva-coral);
+    }
+
+    .badge.skipped {
+      background: rgba(107, 114, 128, 0.1);
+      color: var(--gray-600);
+    }
+
+    .badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .badge.passed::before { background: var(--bbva-green); }
+    .badge.failed::before { background: var(--bbva-coral); }
+    .badge.skipped::before { background: var(--gray-600); }
+
+    /* Accessibility Issues */
+    .a11y-issue {
+      background: rgba(243, 94, 94, 0.05);
+      border: 1px solid rgba(243, 94, 94, 0.2);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .a11y-issue .severity {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .a11y-issue .severity.critical { color: var(--bbva-coral); }
+    .a11y-issue .severity.warning { color: #F59E0B; }
+    .a11y-issue .severity.info { color: var(--bbva-light); }
+
+    .a11y-issue .description {
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .a11y-issue .element {
+      font-family: monospace;
+      font-size: 0.75rem;
+      background: var(--gray-50);
+      padding: 0.5rem;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+
+    /* Performance Metrics */
+    .perf-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+    }
+
+    .perf-metric {
+      text-align: center;
+      padding: 1rem;
+      background: var(--gray-50);
+      border-radius: 8px;
+    }
+
+    .perf-metric .value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--bbva-primary);
+    }
+
+    .perf-metric .value.good { color: var(--bbva-green); }
+    .perf-metric .value.warning { color: #F59E0B; }
+    .perf-metric .value.bad { color: var(--bbva-coral); }
+
+    .perf-metric .label {
+      font-size: 0.75rem;
+      color: var(--gray-600);
+      margin-top: 0.25rem;
+    }
+
+    /* Gherkin Code Block */
+    .gherkin-block {
+      background: var(--bbva-navy);
+      color: #E5E7EB;
+      border-radius: 8px;
+      padding: 1.5rem;
+      font-family: 'Fira Code', 'Monaco', monospace;
+      font-size: 0.875rem;
+      overflow-x: auto;
+      line-height: 1.8;
+    }
+
+    .gherkin-block .keyword {
+      color: var(--bbva-sky);
+      font-weight: 600;
+    }
+
+    .gherkin-block .string {
+      color: var(--bbva-green);
+    }
+
+    .gherkin-block .comment {
+      color: #6B7280;
+      font-style: italic;
+    }
+
+    /* Progress Bar */
+    .progress-bar {
+      height: 8px;
+      background: var(--gray-100);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+
+    .progress-bar .fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-bar .fill.success { background: var(--bbva-green); }
+    .progress-bar .fill.warning { background: #F59E0B; }
+    .progress-bar .fill.error { background: var(--bbva-coral); }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--gray-600);
+      font-size: 0.875rem;
+      border-top: 1px solid var(--gray-100);
+      margin-top: 2rem;
+    }
+
+    /* Collapsible Sections */
+    .collapsible {
+      cursor: pointer;
+    }
+
+    .collapsible-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .collapsible-content.open {
+      max-height: 2000px;
+    }
+
+    /* Print Styles */
+    @media print {
+      .header {
+        background: var(--bbva-primary) !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .test-section {
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>E2E Test Report</h1>
+    <p class="subtitle">Copilot Metrics Portal - BBVA</p>
+    <p class="timestamp">Generated: {{TIMESTAMP}}</p>
+  </header>
+
+  <main class="container">
+    <!-- Executive Summary -->
+    <section>
+      <h2 class="section-title">Executive Summary</h2>
+      <div class="summary-grid">
+        <div class="summary-card {{TOTAL_STATUS}}">
+          <p class="label">Total Tests</p>
+          <p class="value">{{TOTAL_TESTS}}</p>
+          <p class="subtext">{{PASSED_TESTS}} passed, {{FAILED_TESTS}} failed</p>
+        </div>
+        <div class="summary-card {{FUNC_STATUS}}">
+          <p class="label">Functionality</p>
+          <p class="value">{{FUNC_PERCENT}}%</p>
+          <p class="subtext">{{FUNC_PASSED}}/{{FUNC_TOTAL}} tests</p>
+        </div>
+        <div class="summary-card {{A11Y_STATUS}}">
+          <p class="label">Accessibility</p>
+          <p class="value">{{A11Y_ISSUES}}</p>
+          <p class="subtext">issues found</p>
+        </div>
+        <div class="summary-card {{PERF_STATUS}}">
+          <p class="label">Performance</p>
+          <p class="value">{{AVG_LOAD_TIME}}s</p>
+          <p class="subtext">avg load time</p>
+        </div>
+      </div>
+
+      <div class="progress-bar">
+        <div class="fill {{PROGRESS_STATUS}}" style="width: {{PASS_PERCENT}}%"></div>
+      </div>
+    </section>
+
+    <!-- Sections Tested -->
+    <section>
+      <h2 class="section-title">Sections Tested ({{SECTION_COUNT}})</h2>
+      
+      {{#SECTIONS}}
+      <div class="test-section">
+        <div class="test-section-header">
+          <div>
+            <h3>{{SECTION_NAME}}</h3>
+            <span class="url">{{SECTION_URL}}</span>
+          </div>
+          <span class="badge {{SECTION_STATUS}}">{{SECTION_STATUS_TEXT}}</span>
+        </div>
+        <div class="test-section-body">
+          <!-- Functionality Tests -->
+          <h4 style="margin-bottom: 0.5rem; color: var(--bbva-primary);">Functionality Tests</h4>
+          <table class="test-table">
+            <thead>
+              <tr>
+                <th>Test Case</th>
+                <th>Status</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#FUNC_TESTS}}
+              <tr>
+                <td>{{TEST_NAME}}</td>
+                <td><span class="badge {{TEST_STATUS}}">{{TEST_STATUS}}</span></td>
+                <td>{{TEST_DETAILS}}</td>
+              </tr>
+              {{/FUNC_TESTS}}
+            </tbody>
+          </table>
+
+          <!-- Accessibility Issues -->
+          {{#HAS_A11Y_ISSUES}}
+          <h4 style="margin: 1.5rem 0 0.5rem; color: var(--bbva-primary);">Accessibility Issues</h4>
+          {{#A11Y_ISSUES}}
+          <div class="a11y-issue">
+            <p class="severity {{ISSUE_SEVERITY}}">{{ISSUE_SEVERITY}}</p>
+            <p class="description">{{ISSUE_DESCRIPTION}}</p>
+            <code class="element">{{ISSUE_ELEMENT}}</code>
+          </div>
+          {{/A11Y_ISSUES}}
+          {{/HAS_A11Y_ISSUES}}
+
+          <!-- Performance Metrics -->
+          <h4 style="margin: 1.5rem 0 0.5rem; color: var(--bbva-primary);">Performance Metrics</h4>
+          <div class="perf-metrics">
+            <div class="perf-metric">
+              <p class="value {{LOAD_TIME_STATUS}}">{{LOAD_TIME}}s</p>
+              <p class="label">Load Time</p>
+            </div>
+            <div class="perf-metric">
+              <p class="value {{RENDER_TIME_STATUS}}">{{RENDER_TIME}}s</p>
+              <p class="label">Render Time</p>
+            </div>
+            <div class="perf-metric">
+              <p class="value">{{DOM_ELEMENTS}}</p>
+              <p class="label">DOM Elements</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{/SECTIONS}}
+    </section>
+
+    <!-- Gherkin Test Cases -->
+    <section>
+      <h2 class="section-title">Gherkin Test Cases</h2>
+      <p style="margin-bottom: 1rem; color: var(--gray-600);">
+        Auto-generated test cases for future implementation. 
+        File: <code>docs/e2e-reports/gherkin/all-features.feature</code>
+      </p>
+      <pre class="gherkin-block">{{GHERKIN_CONTENT}}</pre>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Generated by E2E Testing Skill - Copilot Metrics Portal</p>
+    <p>BBVA &copy; {{YEAR}}</p>
+  </footer>
+
+  <script>
+    // Syntax highlighting for Gherkin
+    document.querySelectorAll('.gherkin-block').forEach(block => {
+      let html = block.innerHTML;
+      html = html.replace(/(Feature|Scenario|Given|When|Then|And|But|Background|Examples|Scenario Outline):/g, 
+        '<span class="keyword">$1:</span>');
+      html = html.replace(/"([^"]+)"/g, '<span class="string">"$1"</span>');
+      html = html.replace(/(#.+)$/gm, '<span class="comment">$1</span>');
+      block.innerHTML = html;
+    });
+  </script>
+</body>
+</html>

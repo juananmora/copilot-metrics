@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelo de Datos</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --background-color: #ffffff;
+            --surface-color: #f8fafc;
+            --text-color: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --code-bg: #f1f5f9;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .nav-breadcrumb {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--surface-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+        
+        .nav-breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .nav-breadcrumb a:hover { text-decoration: underline; }
+        
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h2 {
+            font-size: 1.875rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h3 { font-size: 1.5rem; }
+        h4 { font-size: 1.25rem; color: var(--secondary-color); }
+        
+        p { margin-bottom: 1rem; }
+        
+        a { color: var(--primary-color); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        ul, ol { margin-bottom: 1rem; padding-left: 2rem; }
+        li { margin-bottom: 0.5rem; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border: 1px solid var(--border-color);
+        }
+        
+        th {
+            background-color: var(--surface-color);
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) { background-color: var(--surface-color); }
+        tr:hover { background-color: #f1f5f9; }
+        
+        code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            background-color: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+        
+        pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            color: inherit;
+        }
+        
+        .mermaid {
+            background-color: var(--surface-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        
+        blockquote {
+            border-left: 4px solid var(--primary-color);
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            background-color: var(--surface-color);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        blockquote p:last-child { margin-bottom: 0; }
+        
+        hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2rem 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .doc-footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.875rem; }
+            h2 { font-size: 1.5rem; }
+            table { display: block; overflow-x: auto; }
+        }
+        
+        @media print {
+            body { max-width: none; padding: 0; }
+            .nav-breadcrumb { display: none; }
+            pre { white-space: pre-wrap; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-breadcrumb"><a href="index.html">Inicio</a> / <a href="../../index.html">architecture</a> / <a href="../index.html">diagrams</a> / <span>data-model</span></nav>
+    <article>
+        <h1>Modelo de Datos</h1>
+<h2>Diagrama de Entidades</h2>
+<div class="mermaid">
+erDiagram
+    DASHBOARD_DATA ||--o{ PROCESSED_SEAT : contiene
+    DASHBOARD_DATA ||--o{ PROCESSED_PR : contiene
+    DASHBOARD_DATA ||--|| SEATS_STATS : tiene
+    DASHBOARD_DATA ||--|| PR_STATS : tiene
+    DASHBOARD_DATA ||--o{ LANGUAGE_STATS : incluye
+    DASHBOARD_DATA ||--o{ TIMEZONE_ACTIVITY : incluye
+    
+    PROCESSED_PR }o--o{ PROCESSED_SEAT : asignada_a
+    
+    DASHBOARD_DATA {
+        SeatsStats seats
+        ProcessedSeat[] seatsList
+        PRStats prs
+        ProcessedPR[] prList
+        LanguageStats[] languages
+        TimezoneActivity[] timezones
+        string lastUpdated
+        boolean isLiveData
+        string dataSource
+    }
+    
+    SEATS_STATS {
+        number totalSeats
+        number totalUsers
+        number withActivity
+        number withoutActivity
+        number active24h
+        number active7d
+        number active30d
+        array byEditor
+        array byPlan
+        number adoptionRate
+        number activeRate7d
+    }
+    
+    PROCESSED_SEAT {
+        string login PK
+        string name
+        string email
+        string planType
+        string createdAt
+        string lastAuthenticatedAt
+        string lastActivityAt
+        string lastActivityEditor
+        boolean isActive
+        string avatarUrl
+        number prCount
+        number agentUsageCount
+    }
+    
+    PR_STATS {
+        number total
+        number open
+        number closed
+        number merged
+        number rejected
+        number mergeRate
+        number rejectionRate
+        number pendingRate
+        number avgDaysToClose
+        array topRepos
+        array topAgents
+        number uniqueAgents
+        array agentEffectiveness
+        array repoEffectiveness
+    }
+    
+    PROCESSED_PR {
+        number number PK
+        string title
+        string state
+        boolean isMerged
+        string repository
+        string author
+        string createdAt
+        string closedAt
+        number daysToClose
+        string url
+        string customAgent
+        string labels
+        number comments
+        array assignees
+    }
+    
+    LANGUAGE_STATS {
+        string name PK
+        number bytes
+        number percentage
+        string color
+    }
+    
+    TIMEZONE_ACTIVITY {
+        string timezone PK
+        number activity
+        number users
+    }
+</div>
+
+<h2>Entidades de Contribuidores</h2>
+<div class="mermaid">
+erDiagram
+    REPO_CONTRIBUTORS_DATA ||--o{ REPO_CONTRIBUTOR : contiene
+    
+    REPO_CONTRIBUTORS_DATA {
+        string repository PK
+        RepoContributor[] contributors
+        number totalCommits
+        number totalPRs
+    }
+    
+    REPO_CONTRIBUTOR {
+        string login PK
+        string name
+        string email
+        string avatarUrl
+        number commits
+        number prs
+        number total
+    }
+    
+    PR_REVIEWERS_DATA ||--o{ PR_REVIEWER : contiene
+    
+    PR_REVIEWERS_DATA {
+        PRReviewer[] reviewers
+        number totalReviews
+    }
+    
+    PR_REVIEWER {
+        string login PK
+        string name
+        string avatarUrl
+        number reviewCount
+        number approvedCount
+        number changesRequestedCount
+        number commentedCount
+    }
+</div>
+
+<h2>Descripción de Entidades</h2>
+<h3>DASHBOARD_DATA</h3>
+<p>Entidad principal que agrupa todos los datos del dashboard.</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>seats</td>
+<td>SeatsStats</td>
+<td>Estadísticas agregadas de licencias</td>
+</tr>
+<tr>
+<td>seatsList</td>
+<td>ProcessedSeat[]</td>
+<td>Lista de usuarios con licencia</td>
+</tr>
+<tr>
+<td>prs</td>
+<td>PRStats</td>
+<td>Estadísticas agregadas de PRs</td>
+</tr>
+<tr>
+<td>prList</td>
+<td>ProcessedPR[]</td>
+<td>Lista de PRs individuales</td>
+</tr>
+<tr>
+<td>languages</td>
+<td>LanguageStats[]</td>
+<td>Distribución por lenguajes</td>
+</tr>
+<tr>
+<td>timezones</td>
+<td>TimezoneActivity[]</td>
+<td>Actividad por zona horaria</td>
+</tr>
+<tr>
+<td>lastUpdated</td>
+<td>string</td>
+<td>Timestamp de última actualización</td>
+</tr>
+<tr>
+<td>isLiveData</td>
+<td>boolean</td>
+<td>Si los datos son en tiempo real</td>
+</tr>
+<tr>
+<td>dataSource</td>
+<td>string</td>
+<td>Origen de los datos</td>
+</tr>
+</tbody></table>
+<h3>PROCESSED_SEAT</h3>
+<p>Usuario con licencia de Copilot procesado.</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Nullable</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>login</td>
+<td>string</td>
+<td>No</td>
+<td>Username de GitHub (PK)</td>
+</tr>
+<tr>
+<td>name</td>
+<td>string</td>
+<td>Sí</td>
+<td>Nombre completo</td>
+</tr>
+<tr>
+<td>email</td>
+<td>string</td>
+<td>Sí</td>
+<td>Email del usuario</td>
+</tr>
+<tr>
+<td>planType</td>
+<td>string</td>
+<td>No</td>
+<td>Tipo de plan (business, enterprise)</td>
+</tr>
+<tr>
+<td>createdAt</td>
+<td>string</td>
+<td>No</td>
+<td>Fecha de asignación de licencia</td>
+</tr>
+<tr>
+<td>lastActivityAt</td>
+<td>string</td>
+<td>No</td>
+<td>Última actividad con Copilot</td>
+</tr>
+<tr>
+<td>lastActivityEditor</td>
+<td>string</td>
+<td>No</td>
+<td>Editor usado en última actividad</td>
+</tr>
+<tr>
+<td>isActive</td>
+<td>boolean</td>
+<td>No</td>
+<td>Si tiene actividad registrada</td>
+</tr>
+<tr>
+<td>avatarUrl</td>
+<td>string</td>
+<td>Sí</td>
+<td>URL del avatar</td>
+</tr>
+<tr>
+<td>prCount</td>
+<td>number</td>
+<td>Sí</td>
+<td>PRs de Copilot asignadas</td>
+</tr>
+<tr>
+<td>agentUsageCount</td>
+<td>number</td>
+<td>Sí</td>
+<td>Uso estimado de agentes</td>
+</tr>
+</tbody></table>
+<h3>PROCESSED_PR</h3>
+<p>Pull Request creado por Copilot SWE Agent.</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Nullable</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>number</td>
+<td>number</td>
+<td>No</td>
+<td>Número del PR (PK)</td>
+</tr>
+<tr>
+<td>title</td>
+<td>string</td>
+<td>No</td>
+<td>Título del PR</td>
+</tr>
+<tr>
+<td>state</td>
+<td>&#39;open&#39; | &#39;closed&#39;</td>
+<td>No</td>
+<td>Estado actual</td>
+</tr>
+<tr>
+<td>isMerged</td>
+<td>boolean</td>
+<td>No</td>
+<td>Si fue integrado</td>
+</tr>
+<tr>
+<td>repository</td>
+<td>string</td>
+<td>No</td>
+<td>Repositorio (org/repo)</td>
+</tr>
+<tr>
+<td>author</td>
+<td>string</td>
+<td>No</td>
+<td>Autor (copilot-swe-agent)</td>
+</tr>
+<tr>
+<td>createdAt</td>
+<td>string</td>
+<td>No</td>
+<td>Fecha de creación</td>
+</tr>
+<tr>
+<td>closedAt</td>
+<td>string</td>
+<td>Sí</td>
+<td>Fecha de cierre</td>
+</tr>
+<tr>
+<td>daysToClose</td>
+<td>number</td>
+<td>Sí</td>
+<td>Días hasta cierre</td>
+</tr>
+<tr>
+<td>url</td>
+<td>string</td>
+<td>No</td>
+<td>URL del PR</td>
+</tr>
+<tr>
+<td>customAgent</td>
+<td>string</td>
+<td>No</td>
+<td>Agente personalizado usado</td>
+</tr>
+<tr>
+<td>assignees</td>
+<td>string[]</td>
+<td>No</td>
+<td>Usuarios asignados</td>
+</tr>
+</tbody></table>
+<h3>PR_STATS</h3>
+<p>Estadísticas agregadas de Pull Requests.</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>total</td>
+<td>number</td>
+<td>Total de PRs</td>
+</tr>
+<tr>
+<td>open</td>
+<td>number</td>
+<td>PRs abiertas</td>
+</tr>
+<tr>
+<td>closed</td>
+<td>number</td>
+<td>PRs cerradas</td>
+</tr>
+<tr>
+<td>merged</td>
+<td>number</td>
+<td>PRs integradas</td>
+</tr>
+<tr>
+<td>rejected</td>
+<td>number</td>
+<td>PRs rechazadas</td>
+</tr>
+<tr>
+<td>mergeRate</td>
+<td>number</td>
+<td>% de merge (merged/closed)</td>
+</tr>
+<tr>
+<td>rejectionRate</td>
+<td>number</td>
+<td>% de rechazo</td>
+</tr>
+<tr>
+<td>pendingRate</td>
+<td>number</td>
+<td>% pendientes (open/total)</td>
+</tr>
+<tr>
+<td>topRepos</td>
+<td>array</td>
+<td>Top 10 repositorios</td>
+</tr>
+<tr>
+<td>topAgents</td>
+<td>array</td>
+<td>Top 10 agentes</td>
+</tr>
+<tr>
+<td>agentEffectiveness</td>
+<td>array</td>
+<td>Efectividad por agente</td>
+</tr>
+<tr>
+<td>repoEffectiveness</td>
+<td>array</td>
+<td>Efectividad por repo</td>
+</tr>
+</tbody></table>
+<h2>Flujo de Datos</h2>
+<div class="mermaid">
+flowchart LR
+    subgraph "GitHub API"
+        GH_SEATS[/copilot/billing/seats/]
+        GH_SEARCH[/search/issues/]
+        GH_USERS[/users/:login/]
+        GH_REPOS[/repos/:repo/]
+    end
+    
+    subgraph "Backend Processing"
+        FETCH[Fetch Raw Data]
+        PROCESS[Process & Transform]
+        CALC[Calculate Stats]
+        CACHE[Store in Cache]
+    end
+    
+    subgraph "Frontend"
+        RQ[React Query]
+        STATE[Component State]
+        UI[UI Render]
+    end
+    
+    GH_SEATS --> FETCH
+    GH_SEARCH --> FETCH
+    GH_USERS --> FETCH
+    GH_REPOS --> FETCH
+    
+    FETCH --> PROCESS
+    PROCESS --> CALC
+    CALC --> CACHE
+    
+    CACHE -->|WebSocket| RQ
+    CACHE -->|REST| RQ
+    RQ --> STATE
+    STATE --> UI
+</div>
+
+<h2>Índices y Búsquedas</h2>
+<table>
+<thead>
+<tr>
+<th>Búsqueda</th>
+<th>Campos</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PRs por autor</td>
+<td><code>author = app/copilot-swe-agent</code></td>
+<td>Filtro principal</td>
+</tr>
+<tr>
+<td>PRs por org</td>
+<td><code>org = copilot-full-capacity</code></td>
+<td>Scope de búsqueda</td>
+</tr>
+<tr>
+<td>Usuarios activos</td>
+<td><code>lastActivityAt != &#39;-&#39;</code></td>
+<td>Filtro de adopción</td>
+</tr>
+<tr>
+<td>Top repos</td>
+<td><code>repository</code> (GROUP BY + COUNT)</td>
+<td>Ranking</td>
+</tr>
+<tr>
+<td>Top agents</td>
+<td><code>customAgent</code> (GROUP BY + COUNT)</td>
+<td>Ranking</td>
+</tr>
+</tbody></table>
+
+    </article>
+    <footer class="doc-footer">
+        <p>Documentación generada automáticamente el 04/02/2026, 10:02</p>
+    </footer>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            securityLevel: 'loose',
+            flowchart: { useMaxWidth: true, htmlLabels: true }
+        });
+    </script>
+</body>
+</html>

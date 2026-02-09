@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Componente: Frontend React</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --background-color: #ffffff;
+            --surface-color: #f8fafc;
+            --text-color: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --code-bg: #f1f5f9;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .nav-breadcrumb {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--surface-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+        
+        .nav-breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .nav-breadcrumb a:hover { text-decoration: underline; }
+        
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h2 {
+            font-size: 1.875rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h3 { font-size: 1.5rem; }
+        h4 { font-size: 1.25rem; color: var(--secondary-color); }
+        
+        p { margin-bottom: 1rem; }
+        
+        a { color: var(--primary-color); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        ul, ol { margin-bottom: 1rem; padding-left: 2rem; }
+        li { margin-bottom: 0.5rem; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border: 1px solid var(--border-color);
+        }
+        
+        th {
+            background-color: var(--surface-color);
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) { background-color: var(--surface-color); }
+        tr:hover { background-color: #f1f5f9; }
+        
+        code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            background-color: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+        
+        pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            color: inherit;
+        }
+        
+        .mermaid {
+            background-color: var(--surface-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        
+        blockquote {
+            border-left: 4px solid var(--primary-color);
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            background-color: var(--surface-color);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        blockquote p:last-child { margin-bottom: 0; }
+        
+        hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2rem 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .doc-footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.875rem; }
+            h2 { font-size: 1.5rem; }
+            table { display: block; overflow-x: auto; }
+        }
+        
+        @media print {
+            body { max-width: none; padding: 0; }
+            .nav-breadcrumb { display: none; }
+            pre { white-space: pre-wrap; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-breadcrumb"><a href="index.html">Inicio</a> / <a href="../../index.html">architecture</a> / <a href="../index.html">components</a> / <span>comp-frontend</span></nav>
+    <article>
+        <h1>Componente: Frontend React</h1>
+<h2>Información General</h2>
+<table>
+<thead>
+<tr>
+<th>Atributo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Tipo</strong></td>
+<td>Aplicación Web SPA</td>
+</tr>
+<tr>
+<td><strong>Responsabilidad</strong></td>
+<td>UI, navegación, gestión de estado cliente</td>
+</tr>
+<tr>
+<td><strong>Ubicación</strong></td>
+<td><code>src/</code></td>
+</tr>
+<tr>
+<td><strong>Tecnologías</strong></td>
+<td>React 19, TypeScript, TailwindCSS, React Query</td>
+</tr>
+</tbody></table>
+<h2>Descripción</h2>
+<p>El frontend es una Single Page Application (SPA) construida con React que proporciona la interfaz de usuario del portal de métricas. Implementa un diseño moderno con componentes reutilizables, animaciones fluidas, y soporte PWA para funcionamiento offline.</p>
+<h2>Diagrama de Componentes</h2>
+<div class="mermaid">
+graph TB
+    subgraph "Frontend React"
+        subgraph "Pages"
+            ED[ExecutiveDashboard]
+            OV[OverviewPage]
+            UP[UsersPage]
+            PP[PullRequestsPage]
+            AP[AgentsPage]
+            SP[SettingsPage]
+        end
+        
+        subgraph "Layout"
+            LY[Layout]
+            NB[NavBar]
+            HD[Header]
+            FT[Footer]
+        end
+        
+        subgraph "Components"
+            AIB[AIBanner]
+            ADP[AdoptionPanel]
+            EFP[EffectivenessPanel]
+            TUT[TopUsersTable]
+            PRT[PRTable]
+            CHT[Charts]
+            PM[PulseMonitor]
+        end
+        
+        subgraph "Services"
+            GH[GitHub Service]
+            WS[WebSocket Service]
+            TC[Token Service]
+            OC[Offline Cache]
+        end
+        
+        subgraph "Hooks"
+            RQ[React Query]
+            UWS[useWebSocket]
+            UOS[useOnlineStatus]
+        end
+    end
+    
+    LY --> NB
+    LY --> HD
+    LY --> FT
+    
+    ED --> LY
+    OV --> LY
+    UP --> LY
+    
+    OV --> AIB
+    OV --> PM
+    UP --> ADP
+    UP --> TUT
+    PP --> PRT
+    
+    UWS --> WS
+    RQ --> GH
+    UOS --> OC
+</div>
+
+<h2>Estructura de Páginas</h2>
+<h3>Executive Dashboard (<code>/dashboard</code>)</h3>
+<p>Vista ejecutiva con KPIs principales y gráficos de tendencias.</p>
+<h3>Overview (<code>/</code>)</h3>
+<p>Página principal con banner AI, monitores de pulso, y gráfico de contribuciones.</p>
+<h3>Usuarios (<code>/users</code>)</h3>
+<p>Métricas de adopción, distribución por editor, rankings de usuarios y contribuidores.</p>
+<h3>Pull Requests (<code>/prs</code>)</h3>
+<p>Tabla de PRs con filtros, estadísticas de merge/rejection, y tiempos.</p>
+<h3>Agentes (<code>/agents</code>)</h3>
+<p>Analytics de Custom Agents: distribución, efectividad, radar de métricas.</p>
+<h3>Settings (<code>/settings</code>)</h3>
+<p>Configuración de token GitHub y preferencias de usuario.</p>
+<h2>Componentes Principales</h2>
+<h3>AIBanner</h3>
+<p>Banner hero con métricas principales de Copilot y efectos visuales (partículas, confetti).</p>
+<pre><code class="language-typescript">interface AIBannerProps {
+  totalPRs: number;
+  withAgent: number;
+  mergeRate: number;
+  uniqueAgents: number;
+  merged?: number;
+  avgDaysToClose?: number | string;
+  open?: number;
+}
+</code></pre>
+<h3>AdoptionPanel</h3>
+<p>Panel de métricas de adopción con barras de progreso y estadísticas.</p>
+<h3>EffectivenessPanel</h3>
+<p>Dashboard de efectividad con Merge Rate, Rejection Rate, y Pending Rate.</p>
+<h3>TopUsersTable</h3>
+<p>Tabla paginada de usuarios con ranking por PRs asignadas.</p>
+<h3>PulseMonitor</h3>
+<p>Visualización en tiempo real de actividad con gráfico animado tipo ECG.</p>
+<h2>Gestión de Estado</h2>
+<div class="mermaid">
+flowchart LR
+    subgraph "React Query"
+        QC[Query Cache]
+        MUT[Mutations]
+    end
+    
+    subgraph "WebSocket"
+        WSS[WS State]
+        MSG[Messages]
+    end
+    
+    subgraph "Local"
+        LS[localStorage]
+        CTX[React Context]
+    end
+    
+    API[Backend API] --> QC
+    WS_SRV[WS Server] --> WSS
+    WSS --> QC
+    
+    QC --> Components
+    CTX --> Components
+    LS --> TC[Token Service]
+</div>
+
+<h2>Routing</h2>
+<pre><code class="language-typescript">const routes = [
+  { path: &#39;/&#39;, element: &lt;OverviewPage /&gt; },
+  { path: &#39;/dashboard&#39;, element: &lt;ExecutiveDashboard /&gt; },
+  { path: &#39;/users&#39;, element: &lt;UsersPage /&gt; },
+  { path: &#39;/prs&#39;, element: &lt;PullRequestsPage /&gt; },
+  { path: &#39;/agents&#39;, element: &lt;AgentsPage /&gt; },
+  { path: &#39;/settings&#39;, element: &lt;SettingsPage /&gt; },
+];
+</code></pre>
+<h2>Estilos y Diseño</h2>
+<ul>
+<li><strong>Framework CSS</strong>: TailwindCSS con configuración personalizada</li>
+<li><strong>Colores BBVA</strong>: Paleta corporativa definida en <code>tailwind.config.js</code></li>
+<li><strong>Animaciones</strong>: CSS animations para fade-in, pulse, y transiciones</li>
+<li><strong>Responsive</strong>: Mobile-first con breakpoints md, lg, xl</li>
+<li><strong>Dark Mode</strong>: Diseño oscuro por defecto (estilo &quot;Stitch&quot;)</li>
+</ul>
+<h2>PWA Features</h2>
+<ul>
+<li><strong>Service Worker</strong>: Caché de assets estáticos</li>
+<li><strong>Manifest</strong>: Instalable como app nativa</li>
+<li><strong>Offline</strong>: Funciona con datos cacheados sin conexión</li>
+<li><strong>Updates</strong>: Auto-update en segundo plano</li>
+</ul>
+<h2>Dependencias Externas</h2>
+<table>
+<thead>
+<tr>
+<th>Librería</th>
+<th>Propósito</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@tanstack/react-query</code></td>
+<td>Gestión de estado servidor y caché</td>
+</tr>
+<tr>
+<td><code>react-router-dom</code></td>
+<td>Navegación SPA</td>
+</tr>
+<tr>
+<td><code>recharts</code></td>
+<td>Gráficos y visualizaciones</td>
+</tr>
+<tr>
+<td><code>lucide-react</code></td>
+<td>Iconos SVG</td>
+</tr>
+<tr>
+<td><code>axios</code></td>
+<td>Cliente HTTP</td>
+</tr>
+<tr>
+<td><code>date-fns</code></td>
+<td>Manipulación de fechas</td>
+</tr>
+</tbody></table>
+
+    </article>
+    <footer class="doc-footer">
+        <p>Documentación generada automáticamente el 04/02/2026, 10:02</p>
+    </footer>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            securityLevel: 'loose',
+            flowchart: { useMaxWidth: true, htmlLabels: true }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F002 - Gestión de Pull Requests</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --background-color: #ffffff;
+            --surface-color: #f8fafc;
+            --text-color: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --code-bg: #f1f5f9;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .nav-breadcrumb {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--surface-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+        
+        .nav-breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .nav-breadcrumb a:hover { text-decoration: underline; }
+        
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h2 {
+            font-size: 1.875rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h3 { font-size: 1.5rem; }
+        h4 { font-size: 1.25rem; color: var(--secondary-color); }
+        
+        p { margin-bottom: 1rem; }
+        
+        a { color: var(--primary-color); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        ul, ol { margin-bottom: 1rem; padding-left: 2rem; }
+        li { margin-bottom: 0.5rem; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border: 1px solid var(--border-color);
+        }
+        
+        th {
+            background-color: var(--surface-color);
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) { background-color: var(--surface-color); }
+        tr:hover { background-color: #f1f5f9; }
+        
+        code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            background-color: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+        
+        pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            color: inherit;
+        }
+        
+        .mermaid {
+            background-color: var(--surface-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        
+        blockquote {
+            border-left: 4px solid var(--primary-color);
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            background-color: var(--surface-color);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        blockquote p:last-child { margin-bottom: 0; }
+        
+        hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2rem 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .doc-footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.875rem; }
+            h2 { font-size: 1.5rem; }
+            table { display: block; overflow-x: auto; }
+        }
+        
+        @media print {
+            body { max-width: none; padding: 0; }
+            .nav-breadcrumb { display: none; }
+            pre { white-space: pre-wrap; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-breadcrumb"><a href="index.html">Inicio</a> / <a href="../../index.html">functional</a> / <a href="../index.html">features</a> / <span>feat-pull-requests</span></nav>
+    <article>
+        <h1>F002 - Gestión de Pull Requests</h1>
+<p><strong>ID</strong>: F002
+<strong>Módulo</strong>: Pull Requests
+<strong>Estado</strong>: Activo</p>
+<h2>Resumen</h2>
+<p>La página de Pull Requests permite visualizar, filtrar y analizar todos los PRs creados por GitHub Copilot SWE Agent en la organización.</p>
+<h2>Diagrama de la Página</h2>
+<div class="mermaid">
+graph TB
+    subgraph "Pull Requests Page"
+        HEADER[Encabezado con Stats]
+        
+        subgraph "Filtros"
+            F1[Estado]
+            F2[Repositorio]
+            F3[Custom Agent]
+            F4[Búsqueda]
+        end
+        
+        TABLE[Tabla de PRs]
+        PAGINATION[Paginación]
+    end
+    
+    HEADER --> F1
+    F1 --> F2
+    F2 --> F3
+    F3 --> F4
+    F4 --> TABLE
+    TABLE --> PAGINATION
+</div>
+
+<h2>Funcionalidades</h2>
+<h3>1. Estadísticas de Cabecera</h3>
+<p>KPIs rápidos del estado actual de PRs:</p>
+<table>
+<thead>
+<tr>
+<th>KPI</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Total</td>
+<td>Cantidad total de PRs</td>
+</tr>
+<tr>
+<td>Open</td>
+<td>PRs pendientes</td>
+</tr>
+<tr>
+<td>Merged</td>
+<td>PRs fusionados</td>
+</tr>
+<tr>
+<td>Rejected</td>
+<td>PRs rechazados</td>
+</tr>
+</tbody></table>
+<h3>2. Sistema de Filtros</h3>
+<div class="mermaid">
+flowchart LR
+    ALL[Todos los PRs] --> F1{Estado?}
+    F1 -->|Open| OPEN[PRs Abiertos]
+    F1 -->|Merged| MERGED[PRs Merged]
+    F1 -->|Rejected| REJECTED[PRs Rechazados]
+    
+    OPEN --> F2{Repo?}
+    MERGED --> F2
+    REJECTED --> F2
+    
+    F2 --> F3{Agent?}
+    F3 --> F4{Search?}
+    F4 --> RESULT[PRs Filtrados]
+</div>
+
+<p><strong>Filtros disponibles:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Filtro</th>
+<th>Tipo</th>
+<th>Opciones</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Estado</td>
+<td>Select</td>
+<td>All, Open, Merged, Rejected</td>
+</tr>
+<tr>
+<td>Repositorio</td>
+<td>Select</td>
+<td>Lista dinámica de repos</td>
+</tr>
+<tr>
+<td>Custom Agent</td>
+<td>Select</td>
+<td>Lista dinámica de agents</td>
+</tr>
+<tr>
+<td>Búsqueda</td>
+<td>Text</td>
+<td>Busca en título y número</td>
+</tr>
+</tbody></table>
+<h3>3. Tabla de PRs</h3>
+<p><strong>Columnas:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Columna</th>
+<th>Descripción</th>
+<th>Ordenable</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>#</td>
+<td>Número del PR</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td>Título</td>
+<td>Título del PR</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td>Repositorio</td>
+<td>Nombre del repo</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td>Estado</td>
+<td>Open/Merged/Rejected</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td>Custom Agent</td>
+<td>Agente utilizado</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td>Creado</td>
+<td>Fecha de creación</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td>Cerrado</td>
+<td>Fecha de cierre</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td>Días</td>
+<td>Tiempo hasta cierre</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td>Comentarios</td>
+<td>Cantidad</td>
+<td>Sí</td>
+</tr>
+</tbody></table>
+<h3>4. Paginación</h3>
+<ul>
+<li>Items por página: 10, 25, 50, 100</li>
+<li>Navegación: Primera, Anterior, Siguiente, Última</li>
+<li>Indicador: &quot;Mostrando X-Y de Z&quot;</li>
+</ul>
+<h2>Casos de Uso</h2>
+<h3>CU001 - Listar PRs</h3>
+<p><strong>Actor</strong>: Administrador</p>
+<p><strong>Flujo:</strong></p>
+<ol>
+<li>Usuario navega a &quot;Pull Requests&quot;</li>
+<li>Sistema carga lista de PRs</li>
+<li>Sistema muestra tabla paginada</li>
+<li>Usuario puede navegar entre páginas</li>
+</ol>
+<h3>CU002 - Filtrar por Estado</h3>
+<p><strong>Actor</strong>: Administrador</p>
+<p><strong>Flujo:</strong></p>
+<ol>
+<li>Usuario selecciona estado &quot;Merged&quot;</li>
+<li>Sistema filtra PRs</li>
+<li>Sistema actualiza tabla</li>
+<li>Sistema actualiza contadores</li>
+</ol>
+<div class="mermaid">
+sequenceDiagram
+    actor User
+    participant UI as PRTable
+    participant State as filterState
+    
+    User->>UI: Selecciona "Merged"
+    UI->>State: setFilter({status: 'merged'})
+    State->>UI: filteredPRs
+    UI->>UI: Re-render tabla
+    UI-->>User: Tabla actualizada
+</div>
+
+<h3>CU003 - Ordenar por columna</h3>
+<p><strong>Actor</strong>: Administrador</p>
+<p><strong>Flujo:</strong></p>
+<ol>
+<li>Usuario hace clic en encabezado de columna</li>
+<li>Sistema ordena ascendente</li>
+<li>Usuario hace clic de nuevo</li>
+<li>Sistema ordena descendente</li>
+</ol>
+<h3>CU004 - Buscar PR específico</h3>
+<p><strong>Actor</strong>: Administrador</p>
+<p><strong>Flujo:</strong></p>
+<ol>
+<li>Usuario escribe en campo de búsqueda</li>
+<li>Sistema aplica debounce (300ms)</li>
+<li>Sistema filtra por título o número</li>
+<li>Sistema muestra resultados</li>
+</ol>
+<h2>Diagrama de Estados de PR</h2>
+<div class="mermaid">
+stateDiagram-v2
+    [*] --> Open: PR Creado
+    Open --> Merged: Aprobado y Fusionado
+    Open --> Rejected: Rechazado
+    Open --> Open: En Revisión
+    Merged --> [*]
+    Rejected --> [*]
+</div>
+
+<h2>Modelo de Datos</h2>
+<div class="mermaid">
+erDiagram
+    PR {
+        int number PK
+        string title
+        string state
+        boolean isMerged
+        string repository
+        string author
+        string customAgent
+        datetime createdAt
+        datetime closedAt
+        float daysToClose
+        int comments
+        string url
+    }
+    
+    REPOSITORY {
+        string name PK
+        int prCount
+    }
+    
+    AGENT {
+        string name PK
+        int prCount
+        float mergeRate
+    }
+    
+    PR }o--|| REPOSITORY : "pertenece a"
+    PR }o--o| AGENT : "usa"
+</div>
+
+<h2>Reglas de Negocio</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Regla</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RN001</td>
+<td>Estado derivado</td>
+<td>Si closed_at != null y merged_at == null → Rejected</td>
+</tr>
+<tr>
+<td>RN002</td>
+<td>Días de cierre</td>
+<td>Solo calculado si PR está cerrado</td>
+</tr>
+<tr>
+<td>RN003</td>
+<td>Sin agente</td>
+<td>PRs sin custom agent muestran &quot;-&quot;</td>
+</tr>
+</tbody></table>
+<h2>Validaciones</h2>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Validación</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Búsqueda</td>
+<td>Mínimo 2 caracteres para activar</td>
+</tr>
+<tr>
+<td>Paginación</td>
+<td>Página no puede ser &lt; 1</td>
+</tr>
+</tbody></table>
+<h2>Acciones Disponibles</h2>
+<table>
+<thead>
+<tr>
+<th>Acción</th>
+<th>Descripción</th>
+<th>Ubicación</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ver PR</td>
+<td>Abre PR en GitHub</td>
+<td>Click en número</td>
+</tr>
+<tr>
+<td>Copiar URL</td>
+<td>Copia link del PR</td>
+<td>Icono en fila</td>
+</tr>
+<tr>
+<td>Exportar</td>
+<td>Descarga CSV (futuro)</td>
+<td>Header</td>
+</tr>
+</tbody></table>
+<h2>Mensajes del Sistema</h2>
+<table>
+<thead>
+<tr>
+<th>Código</th>
+<th>Tipo</th>
+<th>Mensaje</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MSG001</td>
+<td>Info</td>
+<td>&quot;No se encontraron PRs con los filtros seleccionados&quot;</td>
+</tr>
+<tr>
+<td>MSG002</td>
+<td>Info</td>
+<td>&quot;Mostrando X de Y resultados&quot;</td>
+</tr>
+</tbody></table>
+<h2>Responsive</h2>
+<table>
+<thead>
+<tr>
+<th>Breakpoint</th>
+<th>Comportamiento</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Mobile</td>
+<td>Tabla con scroll horizontal</td>
+</tr>
+<tr>
+<td>Tablet</td>
+<td>Columnas reducidas</td>
+</tr>
+<tr>
+<td>Desktop</td>
+<td>Todas las columnas visibles</td>
+</tr>
+</tbody></table>
+<h2>Referencias</h2>
+<ul>
+<li><a href="../../architecture/components/comp-services.html">Servicio GitHub</a></li>
+<li><a href="../../architecture/overview.html">Tipos de Datos</a></li>
+</ul>
+
+    </article>
+    <footer class="doc-footer">
+        <p>Documentación generada automáticamente el 04/02/2026, 10:02</p>
+    </footer>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            securityLevel: 'loose',
+            flowchart: { useMaxWidth: true, htmlLabels: true }
+        });
+    </script>
+</body>
+</html>

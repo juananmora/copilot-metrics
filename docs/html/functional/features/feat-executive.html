@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F005 - Dashboard Ejecutivo</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --background-color: #ffffff;
+            --surface-color: #f8fafc;
+            --text-color: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --code-bg: #f1f5f9;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .nav-breadcrumb {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--surface-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+        
+        .nav-breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .nav-breadcrumb a:hover { text-decoration: underline; }
+        
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h2 {
+            font-size: 1.875rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h3 { font-size: 1.5rem; }
+        h4 { font-size: 1.25rem; color: var(--secondary-color); }
+        
+        p { margin-bottom: 1rem; }
+        
+        a { color: var(--primary-color); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        ul, ol { margin-bottom: 1rem; padding-left: 2rem; }
+        li { margin-bottom: 0.5rem; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border: 1px solid var(--border-color);
+        }
+        
+        th {
+            background-color: var(--surface-color);
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) { background-color: var(--surface-color); }
+        tr:hover { background-color: #f1f5f9; }
+        
+        code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            background-color: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+        
+        pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            color: inherit;
+        }
+        
+        .mermaid {
+            background-color: var(--surface-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        
+        blockquote {
+            border-left: 4px solid var(--primary-color);
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            background-color: var(--surface-color);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        blockquote p:last-child { margin-bottom: 0; }
+        
+        hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2rem 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .doc-footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.875rem; }
+            h2 { font-size: 1.5rem; }
+            table { display: block; overflow-x: auto; }
+        }
+        
+        @media print {
+            body { max-width: none; padding: 0; }
+            .nav-breadcrumb { display: none; }
+            pre { white-space: pre-wrap; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-breadcrumb"><a href="index.html">Inicio</a> / <a href="../../index.html">functional</a> / <a href="../index.html">features</a> / <span>feat-executive</span></nav>
+    <article>
+        <h1>F005 - Dashboard Ejecutivo</h1>
+<p><strong>ID</strong>: F005
+<strong>Módulo</strong>: Executive
+<strong>Estado</strong>: Activo</p>
+<h2>Resumen</h2>
+<p>El Dashboard Ejecutivo es una vista simplificada y de alto impacto diseñada para presentaciones a directivos. Muestra los KPIs más relevantes en un formato visualmente atractivo y fácil de comprender.</p>
+<h2>Diagrama de la Página</h2>
+<div class="mermaid">
+graph TB
+    subgraph "Executive Dashboard"
+        HEADER[Header Minimalista]
+        
+        subgraph "Hero Section"
+            HERO[Métricas Principales]
+        end
+        
+        subgraph "KPI Grid"
+            K1[Licencias]
+            K2[PRs]
+            K3[Agents]
+            K4[Merge Rate]
+        end
+        
+        subgraph "Charts"
+            C1[Tendencia]
+            C2[Top Repos]
+        end
+        
+        FOOTER[Footer]
+    end
+</div>
+
+<h2>Características Especiales</h2>
+<h3>1. Layout Independiente</h3>
+<ul>
+<li>No usa el Layout principal con NavBar</li>
+<li>Header minimalista con link de regreso</li>
+<li>Diseñado para presentaciones en pantalla completa</li>
+</ul>
+<h3>2. Diseño Premium</h3>
+<table>
+<thead>
+<tr>
+<th>Elemento</th>
+<th>Característica</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Fondo</td>
+<td>Gradiente oscuro</td>
+</tr>
+<tr>
+<td>Cards</td>
+<td>Efecto glassmorphism</td>
+</tr>
+<tr>
+<td>Números</td>
+<td>Animados con CountUp</td>
+</tr>
+<tr>
+<td>Colores</td>
+<td>Paleta ejecutiva</td>
+</tr>
+</tbody></table>
+<h3>3. Métricas Destacadas</h3>
+<p>Solo se muestran las métricas más relevantes:</p>
+<table>
+<thead>
+<tr>
+<th>Métrica</th>
+<th>Propósito</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Total Licencias</td>
+<td>Inversión en Copilot</td>
+</tr>
+<tr>
+<td>Tasa de Adopción</td>
+<td>ROI de licencias</td>
+</tr>
+<tr>
+<td>PRs Totales</td>
+<td>Productividad generada</td>
+</tr>
+<tr>
+<td>Merge Rate</td>
+<td>Calidad del código</td>
+</tr>
+<tr>
+<td>Custom Agents</td>
+<td>Innovación/personalización</td>
+</tr>
+</tbody></table>
+<h2>Casos de Uso</h2>
+<h3>CU001 - Presentación a directivos</h3>
+<p><strong>Actor</strong>: Ejecutivo</p>
+<p><strong>Flujo:</strong></p>
+<ol>
+<li>Ejecutivo accede via link directo (/executive)</li>
+<li>Sistema muestra dashboard premium</li>
+<li>Ejecutivo presenta métricas</li>
+<li>Audiencia comprende estado de Copilot</li>
+</ol>
+<h3>CU002 - Revisión rápida de KPIs</h3>
+<p><strong>Actor</strong>: Manager</p>
+<p><strong>Flujo:</strong></p>
+<ol>
+<li>Manager accede desde Header</li>
+<li>Sistema carga vista ejecutiva</li>
+<li>Manager revisa métricas clave</li>
+<li>Manager vuelve a vista detallada si necesita</li>
+</ol>
+<h2>Diferencias con Overview</h2>
+<table>
+<thead>
+<tr>
+<th>Aspecto</th>
+<th>Overview</th>
+<th>Executive</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Layout</td>
+<td>Con NavBar</td>
+<td>Sin NavBar</td>
+</tr>
+<tr>
+<td>Detalle</td>
+<td>Alto</td>
+<td>Resumido</td>
+</tr>
+<tr>
+<td>Gráficos</td>
+<td>Múltiples</td>
+<td>Seleccionados</td>
+</tr>
+<tr>
+<td>Objetivo</td>
+<td>Análisis</td>
+<td>Presentación</td>
+</tr>
+<tr>
+<td>Acceso</td>
+<td>Navegación</td>
+<td>Link directo</td>
+</tr>
+</tbody></table>
+<h2>Navegación</h2>
+<div class="mermaid">
+flowchart LR
+    MAIN[Main App] -->|Header Link| EXEC[Executive Dashboard]
+    EXEC -->|Back Link| MAIN
+</div>
+
+<p><strong>URL</strong>: <code>/executive</code></p>
+<h2>Diseño Visual</h2>
+<h3>Paleta de Colores</h3>
+<table>
+<thead>
+<tr>
+<th>Uso</th>
+<th>Color</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Fondo</td>
+<td>#0f172a (slate-900)</td>
+</tr>
+<tr>
+<td>Cards</td>
+<td>rgba(255,255,255,0.1)</td>
+</tr>
+<tr>
+<td>Texto</td>
+<td>#ffffff</td>
+</tr>
+<tr>
+<td>Acento</td>
+<td>#3b82f6 (blue-500)</td>
+</tr>
+<tr>
+<td>Éxito</td>
+<td>#22c55e (green-500)</td>
+</tr>
+</tbody></table>
+<h3>Tipografía</h3>
+<table>
+<thead>
+<tr>
+<th>Elemento</th>
+<th>Tamaño</th>
+<th>Peso</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Título principal</td>
+<td>3xl</td>
+<td>Bold</td>
+</tr>
+<tr>
+<td>KPI Value</td>
+<td>5xl</td>
+<td>Bold</td>
+</tr>
+<tr>
+<td>KPI Label</td>
+<td>lg</td>
+<td>Normal</td>
+</tr>
+<tr>
+<td>Subtexto</td>
+<td>sm</td>
+<td>Light</td>
+</tr>
+</tbody></table>
+<h2>Animaciones</h2>
+<ul>
+<li>Fade in escalonado de elementos</li>
+<li>CountUp en números principales</li>
+<li>Transiciones suaves en hover</li>
+</ul>
+<h2>Responsive</h2>
+<table>
+<thead>
+<tr>
+<th>Breakpoint</th>
+<th>Comportamiento</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Mobile</td>
+<td>Stack vertical</td>
+</tr>
+<tr>
+<td>Tablet</td>
+<td>Grid 2 columnas</td>
+</tr>
+<tr>
+<td>Desktop</td>
+<td>Grid 4 columnas</td>
+</tr>
+<tr>
+<td>Presentación</td>
+<td>Optimizado para 1080p</td>
+</tr>
+</tbody></table>
+<h2>Modo Presentación</h2>
+<p>Consideraciones para uso en presentaciones:</p>
+<ul>
+<li>Colores de alto contraste</li>
+<li>Texto legible a distancia</li>
+<li>Sin elementos interactivos distractores</li>
+<li>Auto-refresh deshabilitado</li>
+</ul>
+<h2>Flujo de Datos</h2>
+<div class="mermaid">
+sequenceDiagram
+    participant Page as ExecutiveDashboard
+    participant RQ as React Query
+    participant GH as github.ts
+    
+    Page->>RQ: useQuery('dashboard')
+    RQ->>GH: fetchDashboardData()
+    GH-->>RQ: DashboardData
+    RQ-->>Page: data
+    
+    Note over Page: Renderiza solo KPIs clave
+</div>
+
+<h2>Métricas Mostradas</h2>
+<table>
+<thead>
+<tr>
+<th>Categoría</th>
+<th>Métricas</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Adopción</td>
+<td>Licencias, Con Actividad, Tasa</td>
+</tr>
+<tr>
+<td>Productividad</td>
+<td>Total PRs, Merged</td>
+</tr>
+<tr>
+<td>Calidad</td>
+<td>Merge Rate, Avg Days</td>
+</tr>
+<tr>
+<td>Innovación</td>
+<td>Custom Agents, PRs con Agent</td>
+</tr>
+</tbody></table>
+<h2>Referencias</h2>
+<ul>
+<li><a href="feat-overview.html">Página Overview</a></li>
+<li><a href="../../architecture/components/comp-overview.html">Componentes</a></li>
+</ul>
+
+    </article>
+    <footer class="doc-footer">
+        <p>Documentación generada automáticamente el 04/02/2026, 10:02</p>
+    </footer>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            securityLevel: 'loose',
+            flowchart: { useMaxWidth: true, htmlLabels: true }
+        });
+    </script>
+</body>
+</html>

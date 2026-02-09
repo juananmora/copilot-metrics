@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F003 - Análisis de Custom Agents</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --background-color: #ffffff;
+            --surface-color: #f8fafc;
+            --text-color: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --code-bg: #f1f5f9;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .nav-breadcrumb {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--surface-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+        
+        .nav-breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .nav-breadcrumb a:hover { text-decoration: underline; }
+        
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h2 {
+            font-size: 1.875rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h3 { font-size: 1.5rem; }
+        h4 { font-size: 1.25rem; color: var(--secondary-color); }
+        
+        p { margin-bottom: 1rem; }
+        
+        a { color: var(--primary-color); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        ul, ol { margin-bottom: 1rem; padding-left: 2rem; }
+        li { margin-bottom: 0.5rem; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border: 1px solid var(--border-color);
+        }
+        
+        th {
+            background-color: var(--surface-color);
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) { background-color: var(--surface-color); }
+        tr:hover { background-color: #f1f5f9; }
+        
+        code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            background-color: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+        
+        pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            color: inherit;
+        }
+        
+        .mermaid {
+            background-color: var(--surface-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        
+        blockquote {
+            border-left: 4px solid var(--primary-color);
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            background-color: var(--surface-color);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        blockquote p:last-child { margin-bottom: 0; }
+        
+        hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2rem 0;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .doc-footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.875rem; }
+            h2 { font-size: 1.5rem; }
+            table { display: block; overflow-x: auto; }
+        }
+        
+        @media print {
+            body { max-width: none; padding: 0; }
+            .nav-breadcrumb { display: none; }
+            pre { white-space: pre-wrap; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-breadcrumb"><a href="index.html">Inicio</a> / <a href="../../index.html">functional</a> / <a href="../index.html">features</a> / <span>feat-agents</span></nav>
+    <article>
+        <h1>F003 - Análisis de Custom Agents</h1>
+<p><strong>ID</strong>: F003
+<strong>Módulo</strong>: Agents
+<strong>Estado</strong>: Activo</p>
+<h2>Resumen</h2>
+<p>La página de Agents proporciona un análisis detallado del uso y efectividad de los Custom Agents de Copilot. Permite identificar qué agentes son más utilizados y cuáles tienen mejor tasa de éxito.</p>
+<h2>Diagrama de la Página</h2>
+<div class="mermaid">
+graph TB
+    subgraph "Agents Page"
+        HEADER[Header con Métricas Generales]
+        
+        subgraph "Summary Cards"
+            SC1[Total Agents]
+            SC2[PRs con Agent]
+            SC3[Top Agent]
+            SC4[Mejor Merge Rate]
+        end
+        
+        subgraph "Charts Row 1"
+            DIST[Distribución de Agentes]
+            USAGE[Uso por Agente]
+        end
+        
+        subgraph "Charts Row 2"
+            EFFECT[Efectividad Comparativa]
+            RADAR[Radar de Métricas]
+        end
+        
+        TABLE[Tabla de Efectividad]
+    end
+</div>
+
+<h2>Funcionalidades</h2>
+<h3>1. Summary Cards</h3>
+<p>Cards con métricas clave de agentes:</p>
+<table>
+<thead>
+<tr>
+<th>Card</th>
+<th>Métrica</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Total Agents</td>
+<td>uniqueAgents</td>
+<td>Número de agentes distintos</td>
+</tr>
+<tr>
+<td>PRs con Agent</td>
+<td>withAgent</td>
+<td>PRs que usan custom agent</td>
+</tr>
+<tr>
+<td>Top Agent</td>
+<td>topAgents[0]</td>
+<td>Agente más utilizado</td>
+</tr>
+<tr>
+<td>Best Merge Rate</td>
+<td>max(mergeRate)</td>
+<td>Agente más efectivo</td>
+</tr>
+</tbody></table>
+<h3>2. Gráfico de Distribución</h3>
+<div class="mermaid">
+pie title Distribución de PRs por Agent
+    "lrba-bitacora" : 22
+    "lra-proto-generator" : 18
+    "lrba-construction" : 18
+    "lrba-modifier" : 17
+    "Otros" : 93
+</div>
+
+<p><strong>Características:</strong></p>
+<ul>
+<li>Pie chart con top 5 agents</li>
+<li>Resto agrupado como &quot;Otros&quot;</li>
+<li>Tooltip con detalle</li>
+<li>Colores diferenciados</li>
+</ul>
+<h3>3. Gráfico de Uso (Bar Chart)</h3>
+<p>Barras horizontales mostrando cantidad de PRs por agente.</p>
+<h3>4. Gráfico de Efectividad</h3>
+<div class="mermaid">
+xychart-beta
+    title "Efectividad por Agente"
+    x-axis ["lrba-bitacora", "lra-proto", "lrba-const", "lrba-mod", "apx_code"]
+    y-axis "Merge Rate %" 0 --> 100
+    bar [78, 85, 72, 90, 65]
+</div>
+
+<p>Compara merge rate entre agentes.</p>
+<h3>5. Radar Chart</h3>
+<p>Gráfico de radar que muestra múltiples métricas por agente:</p>
+<ul>
+<li>Total PRs</li>
+<li>Merged</li>
+<li>Open</li>
+<li>Merge Rate</li>
+</ul>
+<h3>6. Tabla de Efectividad</h3>
+<table>
+<thead>
+<tr>
+<th>Columna</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Agent</td>
+<td>Nombre del agente</td>
+</tr>
+<tr>
+<td>Total</td>
+<td>PRs totales</td>
+</tr>
+<tr>
+<td>Open</td>
+<td>PRs abiertos</td>
+</tr>
+<tr>
+<td>Merged</td>
+<td>PRs mergeados</td>
+</tr>
+<tr>
+<td>Rejected</td>
+<td>PRs rechazados</td>
+</tr>
+<tr>
+<td>Merge Rate</td>
+<td>% de éxito</td>
+</tr>
+</tbody></table>
+<h2>Casos de Uso</h2>
+<h3>CU001 - Analizar agente específico</h3>
+<p><strong>Actor</strong>: Administrador</p>
+<p><strong>Flujo:</strong></p>
+<ol>
+<li>Usuario accede a página Agents</li>
+<li>Sistema muestra gráficos comparativos</li>
+<li>Usuario identifica agente de interés</li>
+<li>Usuario revisa métricas en tabla</li>
+</ol>
+<h3>CU002 - Identificar agente más efectivo</h3>
+<p><strong>Actor</strong>: Ejecutivo</p>
+<p><strong>Flujo:</strong></p>
+<ol>
+<li>Usuario revisa Summary Cards</li>
+<li>Sistema muestra &quot;Mejor Merge Rate&quot;</li>
+<li>Usuario verifica en gráfico de efectividad</li>
+<li>Usuario toma decisiones de mejora</li>
+</ol>
+<h2>Modelo de Datos</h2>
+<div class="mermaid">
+classDiagram
+    class AgentStats {
+        +string agent
+        +int total
+        +int open
+        +int merged
+        +int rejected
+        +float mergeRate
+    }
+    
+    class AgentSummary {
+        +int uniqueAgents
+        +int withAgent
+        +int withoutAgent
+        +AgentStats[] topAgents
+    }
+    
+    AgentSummary --> AgentStats
+</div>
+
+<h2>Cálculos</h2>
+<h3>Merge Rate por Agente</h3>
+<pre><code>mergeRate = (merged / (merged + rejected)) × 100
+</code></pre>
+<h3>Distribución</h3>
+<pre><code>percentage = (agentPRs / totalPRsWithAgent) × 100
+</code></pre>
+<h2>Métricas Derivadas</h2>
+<table>
+<thead>
+<tr>
+<th>Métrica</th>
+<th>Cálculo</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Efectividad</td>
+<td>mergeRate</td>
+<td>Comparar agentes</td>
+</tr>
+<tr>
+<td>Popularidad</td>
+<td>total / totalWithAgent</td>
+<td>Uso relativo</td>
+</tr>
+<tr>
+<td>Pendientes</td>
+<td>open / total</td>
+<td>Carga de trabajo</td>
+</tr>
+</tbody></table>
+<h2>Reglas de Negocio</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Regla</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RN001</td>
+<td>Solo se muestran agentes con al menos 1 PR</td>
+</tr>
+<tr>
+<td>RN002</td>
+<td>&quot;Sin agente&quot; se excluye de rankings</td>
+</tr>
+<tr>
+<td>RN003</td>
+<td>Merge rate solo con PRs cerrados</td>
+</tr>
+</tbody></table>
+<h2>Flujo de Datos</h2>
+<div class="mermaid">
+sequenceDiagram
+    participant Page as AgentsPage
+    participant Context
+    participant Charts
+    
+    Page->>Context: useOutletContext()
+    Context-->>Page: { prs }
+    
+    Note over Page: Extrae agentEffectiveness
+    
+    Page->>Charts: <AgentDistributionChart data={...} />
+    Page->>Charts: <AgentUsageBarChart data={...} />
+    Page->>Charts: <AgentEffectivenessChart data={...} />
+    Page->>Charts: <AgentRadarChart data={...} />
+</div>
+
+<h2>Insights Automáticos</h2>
+<p>El sistema podría mostrar insights como:</p>
+<ul>
+<li>&quot;El agente X tiene 20% más efectividad que el promedio&quot;</li>
+<li>&quot;3 agentes no se han usado en los últimos 7 días&quot;</li>
+<li>&quot;El agente Y tiene el mayor volumen de PRs abiertos&quot;</li>
+</ul>
+<h2>Referencias</h2>
+<ul>
+<li><a href="../../architecture/components/comp-overview.html">Documentación de Charts</a></li>
+<li><a href="../../architecture/components/comp-services.html">Servicio GitHub</a></li>
+</ul>
+
+    </article>
+    <footer class="doc-footer">
+        <p>Documentación generada automáticamente el 04/02/2026, 10:02</p>
+    </footer>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            securityLevel: 'loose',
+            flowchart: { useMaxWidth: true, htmlLabels: true }
+        });
+    </script>
+</body>
+</html>

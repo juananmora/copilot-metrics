@@ -1,0 +1,212 @@
+{
+  "timestamp": "2024-01-15T10:30:00Z",
+  "baseUrl": "http://localhost:5173",
+  "duration": "2m 45s",
+  "environment": {
+    "browser": "Chrome",
+    "viewport": "1920x1080",
+    "nodeVersion": "20.x"
+  },
+  "sections": [
+    {
+      "name": "Dashboard Principal",
+      "url": "/",
+      "functionality": {
+        "passed": 6,
+        "failed": 0,
+        "tests": [
+          {
+            "name": "Página carga correctamente",
+            "status": "passed",
+            "duration": 1250,
+            "gherkin": "@smoke\n  Scenario: Carga inicial del dashboard\n    Given que navego a la URL \"/\"\n    When la página termina de cargar\n    Then debería ver el header con logo BBVA\n    And debería ver el título \"Copilot Metrics\""
+          },
+          {
+            "name": "KPI Cards visibles",
+            "status": "passed",
+            "duration": 500,
+            "gherkin": "@functionality\n  Scenario: KPI Cards se muestran\n    Given que estoy en el dashboard\n    Then debería ver al menos 4 KPI cards\n    And cada card muestra un valor numérico\n    And cada card tiene un título descriptivo"
+          },
+          {
+            "name": "Gráficos renderizan datos",
+            "status": "passed",
+            "duration": 800,
+            "gherkin": "@functionality\n  Scenario: Gráficos de métricas\n    Given que estoy en el dashboard\n    When los datos terminan de cargar\n    Then debería ver gráficos de barras o líneas\n    And los gráficos muestran datos reales (no vacíos)"
+          },
+          {
+            "name": "Navegación del sidebar funciona",
+            "status": "passed",
+            "duration": 350,
+            "gherkin": "@functionality\n  Scenario: Navegación lateral\n    Given que estoy en el dashboard\n    Then debería ver un menú de navegación lateral\n    And el menú tiene links a todas las secciones"
+          },
+          {
+            "name": "Header con información de usuario",
+            "status": "passed",
+            "duration": 200,
+            "gherkin": "@functionality\n  Scenario: Header del usuario\n    Given que estoy en el dashboard\n    Then debería ver el header con nombre de usuario o avatar"
+          },
+          {
+            "name": "Refresh de datos funciona",
+            "status": "passed",
+            "duration": 1500,
+            "gherkin": "@functionality\n  Scenario: Actualización de datos\n    Given que estoy en el dashboard con datos cargados\n    When hago click en el botón de refresh\n    Then los datos se actualizan\n    And se muestra indicador de carga durante la actualización"
+          }
+        ]
+      },
+      "accessibility": {
+        "passed": 12,
+        "failed": 1,
+        "issues": [
+          {
+            "severity": "moderate",
+            "description": "El subtítulo de KPI cards usa color con contraste insuficiente (2.8:1)",
+            "element": "<span class=\"text-xs text-gray-400\">vs last month</span>",
+            "criterion": "WCAG 1.4.3",
+            "recommendation": "Usar text-gray-500 o más oscuro para mejorar contraste"
+          }
+        ]
+      },
+      "performance": {
+        "loadTime": 1.45,
+        "renderTime": 0.82,
+        "domElements": 487,
+        "jsHeapSize": "12.5MB",
+        "warnings": []
+      }
+    },
+    {
+      "name": "Teams",
+      "url": "/teams",
+      "functionality": {
+        "passed": 4,
+        "failed": 1,
+        "tests": [
+          {
+            "name": "Lista de equipos carga",
+            "status": "passed",
+            "duration": 980,
+            "gherkin": "@smoke\n  Scenario: Carga de lista de equipos\n    Given que navego a \"/teams\"\n    When la página termina de cargar\n    Then debería ver una lista o grid de equipos\n    And cada equipo muestra nombre y métricas básicas"
+          },
+          {
+            "name": "Búsqueda de equipos",
+            "status": "passed",
+            "duration": 450,
+            "gherkin": "@functionality\n  Scenario: Búsqueda de equipos\n    Given que estoy en la página de Teams\n    When escribo \"frontend\" en el campo de búsqueda\n    Then la lista se filtra mostrando solo equipos que contienen \"frontend\""
+          },
+          {
+            "name": "Click en equipo navega a detalle",
+            "status": "passed",
+            "duration": 620,
+            "gherkin": "@functionality\n  Scenario: Navegación a detalle de equipo\n    Given que estoy en la página de Teams\n    When hago click en un equipo de la lista\n    Then navego a la página de detalle del equipo\n    And veo métricas específicas de ese equipo"
+          },
+          {
+            "name": "Ordenamiento de tabla",
+            "status": "passed",
+            "duration": 380,
+            "gherkin": "@functionality\n  Scenario: Ordenar equipos\n    Given que estoy en la página de Teams con lista visible\n    When hago click en el header \"Active Users\"\n    Then la lista se ordena por número de usuarios activos"
+          },
+          {
+            "name": "Paginación funciona",
+            "status": "failed",
+            "duration": 200,
+            "error": "Botón de 'Siguiente página' no encontrado en el DOM",
+            "gherkin": "@functionality @regression\n  Scenario: Paginación de equipos\n    Given que hay más de 10 equipos\n    Then debería ver controles de paginación\n    When hago click en \"Siguiente\"\n    Then debería ver la siguiente página de equipos"
+          }
+        ]
+      },
+      "accessibility": {
+        "passed": 10,
+        "failed": 2,
+        "issues": [
+          {
+            "severity": "serious",
+            "description": "Tabla de equipos no tiene caption o aria-describedby",
+            "element": "<table class=\"w-full\">...</table>",
+            "criterion": "WCAG 1.3.1",
+            "recommendation": "Agregar <caption> o aria-describedby para describir el propósito de la tabla"
+          },
+          {
+            "severity": "moderate",
+            "description": "Iconos de ordenamiento no tienen texto alternativo",
+            "element": "<svg class=\"w-4 h-4\">...</svg>",
+            "criterion": "WCAG 1.1.1",
+            "recommendation": "Agregar aria-label='Ordenar ascendente/descendente' a los iconos"
+          }
+        ]
+      },
+      "performance": {
+        "loadTime": 1.85,
+        "renderTime": 1.12,
+        "domElements": 623,
+        "jsHeapSize": "14.2MB",
+        "warnings": [
+          "La lista de equipos renderiza todos los items sin virtualización"
+        ]
+      }
+    },
+    {
+      "name": "Users",
+      "url": "/users",
+      "functionality": {
+        "passed": 5,
+        "failed": 0,
+        "tests": [
+          {
+            "name": "Lista de usuarios carga",
+            "status": "passed",
+            "duration": 1100,
+            "gherkin": "@smoke\n  Scenario: Carga de lista de usuarios\n    Given que navego a \"/users\"\n    When la página termina de cargar\n    Then debería ver una lista de usuarios\n    And cada usuario muestra avatar, nombre y métricas"
+          },
+          {
+            "name": "Filtro por actividad",
+            "status": "passed",
+            "duration": 380,
+            "gherkin": "@functionality\n  Scenario: Filtrar por actividad\n    Given que estoy en la página de Users\n    When selecciono filtro \"Activos últimos 7 días\"\n    Then la lista muestra solo usuarios activos recientemente"
+          },
+          {
+            "name": "Detalle de usuario",
+            "status": "passed",
+            "duration": 550,
+            "gherkin": "@functionality\n  Scenario: Ver detalle de usuario\n    Given que estoy en la página de Users\n    When hago click en un usuario\n    Then veo el perfil detallado del usuario\n    And veo sus métricas de uso de Copilot"
+          },
+          {
+            "name": "Exportar datos",
+            "status": "passed",
+            "duration": 890,
+            "gherkin": "@functionality\n  Scenario: Exportar datos de usuarios\n    Given que estoy en la página de Users\n    When hago click en \"Exportar\"\n    Then se descarga un archivo CSV con los datos de usuarios"
+          },
+          {
+            "name": "Cambio de vista grid/lista",
+            "status": "passed",
+            "duration": 250,
+            "gherkin": "@functionality\n  Scenario: Cambiar vista de usuarios\n    Given que estoy en la página de Users en vista lista\n    When hago click en el botón de vista grid\n    Then los usuarios se muestran en formato grid\n    And puedo volver a vista lista"
+          }
+        ]
+      },
+      "accessibility": {
+        "passed": 14,
+        "failed": 0,
+        "issues": []
+      },
+      "performance": {
+        "loadTime": 2.15,
+        "renderTime": 1.45,
+        "domElements": 892,
+        "jsHeapSize": "18.7MB",
+        "warnings": [
+          "Carga inicial de avatares podría beneficiarse de lazy loading"
+        ]
+      }
+    }
+  ],
+  "summary": {
+    "totalSections": 3,
+    "totalTests": 18,
+    "totalPassed": 15,
+    "totalFailed": 1,
+    "passRate": 93.75,
+    "totalA11yIssues": 3,
+    "avgLoadTime": 1.82,
+    "recommendation": "El portal está en buen estado general. Priorizar: 1) Implementar paginación en Teams, 2) Mejorar accesibilidad de tablas, 3) Optimizar carga de avatares."
+  }
+}
