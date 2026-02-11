@@ -501,85 +501,79 @@ export async function fetchCopilotPRs(): Promise<ProcessedPR[]> {
   }
 
   const { owner } = getEffectiveGitHubConfig();
-
   const allPRs: ProcessedPR[] = [];
-  let page = 1;
-  const perPage = 100;
-  let hasMore = true;
+  
+  console.log(`[PRs] Listing repositories in organization: ${owner}`);
 
-  while (hasMore) {
-    try {
-      // Use URL-safe query format for GitHub Enterprise search
-      const searchUrl = `/search/issues?q=type:pr+org:${owner}+author:app/copilot-swe-agent&per_page=${perPage}&page=${page}`;
-      const response = await getApi().get<SearchResponse>(searchUrl);
+  try {
+    // First, get the list of repositories in the organization
+    const reposResponse = await getApi().get<Array<{name: string}>>(`/orgs/${owner}/repos?type=all&per_page=100&sort=updated`);
+    const repos = reposResponse.data || [];
+    console.log(`[PRs] Found ${repos.length} repositories in ${owner}`);
+    
+    // For performance, limit to first 10 most recently updated repos
+    const reposToCheck = repos.slice(0, 10);
+    console.log(`[PRs] Checking ${reposToCheck.length} most recently updated repos for PRs...`);
+    
+    // Fetch PRs from each repository
+    for (const repo of reposToCheck) {
+      try {
+        const prsResponse = await getApi().get<any[]>(`/repos/${owner}/${repo.name}/pulls?state=all&per_page=30&sort=updated&direction=desc`);
+        const prs = prsResponse.data || [];
+        console.log(`[PRs]   ${repo.name}: ${prs.length} PRs`);
+        
+        for (const pr of prs) {
+          const agent = getCustomAgent(pr.body);
+          const isMerged = !!pr.merged_at;
 
-      console.log(`Found ${response.data.total_count} total PRs`);
-      const items = response.data.items || [];
-      
-      for (const pr of items) {
-        const repo = getRepoFromUrl(pr.html_url);
-        const agent = getCustomAgent(pr.body);
-        const isMerged = !!pr.pull_request?.merged_at;
-
-        let daysToClose: number | null = null;
-        if (pr.closed_at && pr.created_at) {
-          const created = new Date(pr.created_at);
-          const closed = new Date(pr.closed_at);
-          daysToClose = Math.round(((closed.getTime() - created.getTime()) / (1000 * 60 * 60 * 24)) * 10) / 10;
-        }
-
-        // Get assignees from PR
-        const assignees: string[] = [];
-        if (pr.assignees && pr.assignees.length > 0) {
-          for (const a of pr.assignees) {
-            if (a.login) assignees.push(a.login);
+          let daysToClose: number | null = null;
+          if (pr.closed_at && pr.created_at) {
+            const created = new Date(pr.created_at);
+            const closed = new Date(pr.closed_at);
+            daysToClose = Math.round(((closed.getTime() - created.getTime()) / (1000 * 60 * 60 * 24)) * 10) / 10;
           }
-        } else if (pr.assignee?.login) {
-          assignees.push(pr.assignee.login);
+
+          const assignees: string[] = [];
+          if (pr.assignees && pr.assignees.length > 0) {
+            for (const a of pr.assignees) {
+              if (a.login) assignees.push(a.login);
+            }
+          } else if (pr.assignee?.login) {
+            assignees.push(pr.assignee.login);
+          }
+
+          allPRs.push({
+            number: pr.number,
+            title: pr.title,
+            state: pr.state,
+            isMerged,
+            repository: repo.name,
+            author: pr.user?.login || 'unknown',
+            createdAt: pr.created_at,
+            updatedAt: pr.updated_at,
+            closedAt: pr.closed_at || '-',
+            daysToClose,
+            url: pr.html_url,
+            customAgent: agent,
+            labels: pr.labels.map((l: any) => l.name).join(', '),
+            comments: pr.comments,
+            assignees
+          });
         }
-
-        allPRs.push({
-          number: pr.number,
-          title: pr.title,
-          state: pr.state,
-          isMerged,
-          repository: repo,
-          author: 'copilot-swe-agent',
-          createdAt: pr.created_at,
-          updatedAt: pr.updated_at,
-          closedAt: pr.closed_at || '-',
-          daysToClose,
-          url: pr.html_url,
-          customAgent: agent,
-          labels: pr.labels.map(l => l.name).join(', '),
-          comments: pr.comments,
-          assignees
-        });
+      } catch (error) {
+        console.log(`[PRs]   ${repo.name}: error - ${error}`);
+        // Continue with next repo
       }
-
-      if (items.length < perPage) {
-        hasMore = false;
-      } else {
-        page++;
-        await new Promise(resolve => setTimeout(resolve, 500));
-      }
-    } catch (error) {
-      const axiosError = error as AxiosError;
-      console.error('Error fetching PRs:', axiosError.message);
-      
-      // Don't change global flag - let caller handle fallback
-      // Just throw the error to be caught by fetchDashboardData
-      throw error;
     }
+    
+    console.log(`[PRs] ✅ Total PRs collected: ${allPRs.length} from ${reposToCheck.length} repos`);
+    return allPRs;
+    
+  } catch (error) {
+    const axiosError = error as AxiosError;
+    console.error('[PRs] ❌ Error listing repositories:', axiosError.message);
+    throw error;
   }
-
-  if (allPRs.length === 0) {
-    console.log('No PRs found from copilot-swe-agent');
-    // Return empty array instead of mock data
-    return [];
-  }
-
-  return allPRs;
 }
 
 export function calculatePRStats(prs: ProcessedPR[]): PRStats {
@@ -1054,18 +1048,19 @@ export async function fetchDashboardData(): Promise<DashboardData> {
     seatsFromAPI = false;
   }
 
-  // Fetch PRs (Copilot SWE Agent PRs)
+  // Fetch PRs (any PRs from organization)
   let prList: ProcessedPR[] = [];
   const previousMockFlag = useMockData;
   try {
     prList = await fetchCopilotPRs();
-    prsFromAPI = !useMockData;
-    console.log(`PRs fetched: ${prList.length}`);
+    prsFromAPI = prList.length > 0 && !useMockData;
+    console.log(`✅ PRs fetched: ${prList.length} (from ${prsFromAPI ? 'API' : 'empty/mock'})`);
   } catch (error) {
-    console.error('Error fetching PRs:', error);
-    // Use mock data but restore the flag if seats worked
-    prList = getMockPRsData();
+    console.error('❌ Error fetching PRs:', error);
+    // If API call fails completely, return empty array (no mock)
+    prList = [];
     prsFromAPI = false;
+    console.log('⚠️ Using empty PR list due to API error');
     // Restore mock flag to not affect subsequent operations
     if (seatsFromAPI) {
       useMockData = previousMockFlag;
@@ -1100,13 +1095,15 @@ export async function fetchDashboardData(): Promise<DashboardData> {
   const timezones = calculateTimezoneActivity(prList);
   console.log(`Timezone activity calculated: ${timezones.map(t => t.timezone).join(', ')}`);
 
-  // Determine data source - live if seats are from API (primary data)
-  const isLiveData = seatsFromAPI;
+  // Determine data source - live if BOTH seats and PRs are from API
+  const isLiveData = seatsFromAPI && prsFromAPI;
   let dataSource = 'Datos de demostración (Mock)';
   if (seatsFromAPI && prsFromAPI) {
     dataSource = 'GitHub Enterprise (En vivo)';
   } else if (seatsFromAPI && !prsFromAPI) {
-    dataSource = 'GitHub Enterprise (Parcial: Seats en vivo, PRs demo)';
+    dataSource = `GitHub Enterprise (Seats: ${seatsList.length} usuarios, PRs: 0)`;
+  } else if (!seatsFromAPI && prsFromAPI) {
+    dataSource = `GitHub Enterprise (Seats: 0, PRs: ${prList.length})`;
   }
   
   console.log(`✅ Data fetched - Seats: ${seatsFromAPI ? 'API' : 'MOCK'}, PRs: ${prsFromAPI ? 'API' : 'MOCK'}`);
