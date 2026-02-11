@@ -394,19 +394,23 @@ export async function fetchCopilotSeats(): Promise<{ totalSeats: number; seats: 
       }
     } catch (error) {
       const axiosError = error as AxiosError;
-      console.error('Error fetching seats:', axiosError.message);
+      console.error('❌ Error fetching seats:', axiosError.message);
+      console.error('Error details:', {
+        status: axiosError.response?.status,
+        statusText: axiosError.response?.statusText,
+        url: axiosError.config?.url,
+        headers: axiosError.config?.headers,
+        data: axiosError.response?.data
+      });
       
-      // Switch to mock data on any API error (network, CORS, 401, 403, etc.)
-      console.log('API error, switching to mock data');
-      useMockData = true;
-      return getMockSeatsData();
+      // Don't change global flag - let caller handle fallback
+      throw error;
     }
   }
 
   if (allSeats.length === 0) {
-    console.log('No seats found, using mock data');
-    useMockData = true;
-    return getMockSeatsData();
+    console.log('No seats found, returning empty array');
+    return { totalSeats: 0, seats: [] };
   }
 
   return { totalSeats, seats: allSeats };
@@ -563,17 +567,16 @@ export async function fetchCopilotPRs(): Promise<ProcessedPR[]> {
       const axiosError = error as AxiosError;
       console.error('Error fetching PRs:', axiosError.message);
       
-      // Switch to mock data on any API error (network, CORS, 401, 403, etc.)
-      console.log('API error, switching to mock data');
-      useMockData = true;
-      return getMockPRsData();
+      // Don't change global flag - let caller handle fallback
+      // Just throw the error to be caught by fetchDashboardData
+      throw error;
     }
   }
 
   if (allPRs.length === 0) {
-    console.log('No PRs found, using mock data');
-    useMockData = true;
-    return getMockPRsData();
+    console.log('No PRs found from copilot-swe-agent');
+    // Return empty array instead of mock data
+    return [];
   }
 
   return allPRs;
@@ -1022,11 +1025,16 @@ export async function fetchDashboardData(): Promise<DashboardData> {
   const { owner } = getEffectiveGitHubConfig();
   let seatsStats: SeatsStats | null = null;
   let seatsList: ProcessedSeat[] = [];
+  
+  // Track data sources independently
+  let seatsFromAPI = false;
+  let prsFromAPI = false;
 
-  console.log('Fetching dashboard data...');
-  console.log(`API Base: ${resolveApiBaseUrl()}`);
-  console.log(`Organization: ${owner}`);
-  console.log(`Mode: ${useMockData ? 'MOCK' : 'API (live)'}`);
+  console.log('🔄 Fetching dashboard data...');
+  console.log(`📡 API Base: ${resolveApiBaseUrl()}`);
+  console.log(`🏢 Organization: ${owner}`);
+  console.log(`🔑 Token available: ${hasToken() ? 'YES' : 'NO'}`);
+  console.log(`📊 Mode: ${useMockData ? '🎭 MOCK' : '✅ API (live)'}`);
 
   // Fetch seats
   try {
@@ -1034,26 +1042,34 @@ export async function fetchDashboardData(): Promise<DashboardData> {
     seatsList = seats;
     if (seats.length > 0) {
       seatsStats = calculateSeatsStats(seats, totalSeats);
+      seatsFromAPI = !useMockData; // Track if we got real data
       console.log(`Seats stats calculated: ${seatsStats.totalSeats} total, ${seatsStats.withActivity} with activity`);
     }
   } catch (error) {
     console.error('Error fetching seats data:', error);
-    // Try mock data
-    useMockData = true;
+    // Use mock data but don't change global flag
     const { totalSeats, seats } = getMockSeatsData();
     seatsList = seats;
     seatsStats = calculateSeatsStats(seats, totalSeats);
+    seatsFromAPI = false;
   }
 
   // Fetch PRs (Copilot SWE Agent PRs)
   let prList: ProcessedPR[] = [];
+  const previousMockFlag = useMockData;
   try {
     prList = await fetchCopilotPRs();
+    prsFromAPI = !useMockData;
     console.log(`PRs fetched: ${prList.length}`);
   } catch (error) {
     console.error('Error fetching PRs:', error);
-    useMockData = true;
+    // Use mock data but restore the flag if seats worked
     prList = getMockPRsData();
+    prsFromAPI = false;
+    // Restore mock flag to not affect subsequent operations
+    if (seatsFromAPI) {
+      useMockData = previousMockFlag;
+    }
   }
 
   // Count PRs assigned to users with Copilot license (cross-reference)
@@ -1066,8 +1082,8 @@ export async function fetchDashboardData(): Promise<DashboardData> {
     prCount: prCountMap.get(seat.login) || 0
   }));
 
-  // Fetch names for users in the ranking (only if using live data)
-  if (!useMockData) {
+  // Fetch names for users in the ranking (only if seats are from API)
+  if (seatsFromAPI) {
     console.log('Fetching user names for ranking...');
     seatsList = await fetchNamesForRankingUsers(seatsList, prCountMap);
   }
@@ -1084,6 +1100,17 @@ export async function fetchDashboardData(): Promise<DashboardData> {
   const timezones = calculateTimezoneActivity(prList);
   console.log(`Timezone activity calculated: ${timezones.map(t => t.timezone).join(', ')}`);
 
+  // Determine data source - live if seats are from API (primary data)
+  const isLiveData = seatsFromAPI;
+  let dataSource = 'Datos de demostración (Mock)';
+  if (seatsFromAPI && prsFromAPI) {
+    dataSource = 'GitHub Enterprise (En vivo)';
+  } else if (seatsFromAPI && !prsFromAPI) {
+    dataSource = 'GitHub Enterprise (Parcial: Seats en vivo, PRs demo)';
+  }
+  
+  console.log(`✅ Data fetched - Seats: ${seatsFromAPI ? 'API' : 'MOCK'}, PRs: ${prsFromAPI ? 'API' : 'MOCK'}`);
+
   const result: DashboardData = {
     seats: seatsStats,
     seatsList,
@@ -1098,12 +1125,12 @@ export async function fetchDashboardData(): Promise<DashboardData> {
       hour: '2-digit',
       minute: '2-digit',
     }),
-    isLiveData: !useMockData,
-    dataSource: useMockData ? 'Datos de demostración (Mock)' : 'GitHub Enterprise (En vivo)'
+    isLiveData,
+    dataSource
   };
 
-  // Save successful fetch to cache for offline use
-  if (!useMockData) {
+  // Save successful fetch to cache for offline use (if at least seats are real)
+  if (seatsFromAPI) {
     saveToCache(result);
   }
 
