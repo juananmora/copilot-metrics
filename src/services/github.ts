@@ -1,7 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import { 
   CopilotSeatsResponse, 
-  SearchResponse, 
   ProcessedSeat, 
   SeatsStats, 
   ProcessedPR, 
@@ -65,23 +64,6 @@ function cleanAgentName(name: string | null): string {
   if (!name || name.trim() === '') return '-';
   const cleaned = name.replace(/^[^a-zA-Z0-9]+/, '').trim();
   return cleaned || '-';
-}
-
-function getRepoFromUrl(url: string): string {
-  // URL format: https://bbva.ghe.com/org/repo/pull/123
-  // We want to extract "org/repo"
-  
-  // Try to match the pattern: /org/repo/pull/ or /org/repo/issues/
-  const match = url.match(/\/([^/]+)\/([^/]+)\/(?:pull|issues)\//);
-  if (match) {
-    return `${match[1]}/${match[2]}`;
-  }
-  
-  // Fallback for github.com or ghe.com URLs
-  const match2 = url.match(/(?:github\.com|ghe\.com)\/([^/]+\/[^/]+)/);
-  if (match2) return match2[1];
-  
-  return 'unknown';
 }
 
 function getCustomAgent(body: string | null): string {
